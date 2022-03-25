@@ -1,4 +1,4 @@
-package com.springrest.demo.RestController;
+package com.whizdm.payment_service.controller
 
 import com.springrest.demo.entity.loanPaymentSchedule;
 import com.springrest.demo.entity.userEmiDetails;
