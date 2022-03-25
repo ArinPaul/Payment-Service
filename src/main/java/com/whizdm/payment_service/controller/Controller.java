@@ -1,8 +1,9 @@
-package com.whizdm.payment_service.controller
+package com.whizdm.payment_service.controller;
 
-import com.springrest.demo.entity.loanPaymentSchedule;
-import com.springrest.demo.entity.userEmiDetails;
-import com.springrest.demo.utils.APICaller.APICaller;
+
+import com.whizdm.payment_service.entity.PaymentScheduleLos;
+import com.whizdm.payment_service.entity.UserEmiDetails;
+import com.whizdm.payment_service.utils.APICaller.APICaller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller implements ControllerService {
     APICaller call = APICaller.getInstance();
     @PostMapping("/payments/api/loanDisbursal")
-    public loanPaymentSchedule loanSaveSchedule(loanPaymentSchedule paymentSchedule){
+    public PaymentScheduleLos loanSaveSchedule(PaymentScheduleLos paymentSchedule){
         //Save Repayment Schedule
         //Disburse Loan
         //Communication service API call to notify user
@@ -21,7 +22,7 @@ public class Controller implements ControllerService {
     }
 
     @PostMapping(path = "/payments/api/emiPayment", consumes = "application/json")
-    public userEmiDetails loanPayEmi(@RequestBody userEmiDetails emiDetails){
+    public UserEmiDetails loanPayEmi(@RequestBody UserEmiDetails emiDetails){
         //AuthToken Validation API Call
         //LOS API call to check if loan is open
         //Check database to verify due amount
