@@ -1,4 +1,4 @@
-package com.springrest.demo.utils.APICaller;
+package com.whizdm.payment_service.utils.APICaller;
 
 import java.io.IOException;
 
