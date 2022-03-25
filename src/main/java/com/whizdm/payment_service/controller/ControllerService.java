@@ -1,10 +1,10 @@
-package com.whizdm.payment_service.controller
+package com.whizdm.payment_service.controller;
 
 
-import com.springrest.demo.entity.loanPaymentSchedule;
-import com.springrest.demo.entity.userEmiDetails;
+import com.whizdm.payment_service.entity.PaymentScheduleLos;
+import com.whizdm.payment_service.entity.UserEmiDetails;
 
 public interface ControllerService {
-    public loanPaymentSchedule loanSaveSchedule (loanPaymentSchedule paymentSchedule);
-    public userEmiDetails loanPayEmi (userEmiDetails emiDetails);
+    public PaymentScheduleLos loanSaveSchedule (PaymentScheduleLos paymentSchedule);
+    public UserEmiDetails loanPayEmi (UserEmiDetails details);
 }
