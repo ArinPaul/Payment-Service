@@ -1,16 +1,38 @@
 package com.whizdm.payment_service.entity;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "loan_payment_schedule")
 public class LoanPaymentSchedule {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private String id ;
+
+    @Column(name = "loan_application_id")
     private long loanApplicationId ;
+
+    @Column(name = "emi")
     private float emi ;
+
+    @Column(name = "due_date")
     private Date dueDate ;
+
+    @Column(name = "due_amount")
     private float dueAmount ;
+
+    @Column(name = "principle_amount")
     private float principleAmount ;
+
+    @Column(name = "interest_amount")
     private float interestAmount ;
+
+    public LoanPaymentSchedule(){
+
+    }
 
     public LoanPaymentSchedule(long loanApplicationId, float emi, Date dueDate, float dueAmount, float principleAmount, float interestAmount) {
         this.loanApplicationId = loanApplicationId;
@@ -27,9 +49,7 @@ public class LoanPaymentSchedule {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
     public long getLoanApplicationId() {
         return loanApplicationId;
@@ -77,5 +97,18 @@ public class LoanPaymentSchedule {
 
     public void setInterestAmount(float interestAmount) {
         this.interestAmount = interestAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "LoanPaymentSchedule{" +
+                "id='" + id + '\'' +
+                ", loanApplicationId=" + loanApplicationId +
+                ", emi=" + emi +
+                ", dueDate=" + dueDate +
+                ", dueAmount=" + dueAmount +
+                ", principleAmount=" + principleAmount +
+                ", interestAmount=" + interestAmount +
+                '}';
     }
 }

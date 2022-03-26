@@ -106,4 +106,20 @@ public class PaymentScheduleLos {
     public void setBank_account_no(long bank_account_no) {
         this.bank_account_no = bank_account_no;
     }
+
+    @Override
+    public String toString() {
+        return "PaymentScheduleLos{" +
+                "loan_id='" + loan_id + '\'' +
+                ", user_id=" + user_id +
+                ", disbursal_amount=" + disbursal_amount +
+                ", first_emi=" + first_emi +
+                ", last_emi=" + last_emi +
+                ", principal_amount=" + principal_amount +
+                ", interest_component=" + interest_component +
+                ", due_date=" + due_date +
+                ", partner_id=" + partner_id +
+                ", bank_account_no=" + bank_account_no +
+                '}';
+    }
 }

@@ -3,11 +3,11 @@ package com.whizdm.payment_service.manager;
 import com.whizdm.payment_service.dao.DaoLoanDisbursal;
 import com.whizdm.payment_service.dao.DaoLoanPayment;
 import com.whizdm.payment_service.dao.DaoLoanPaymentSchedule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.whizdm.payment_service.entity.PaymentScheduleLos;
+import com.whizdm.payment_service.entity.UserEmiDetails;
 
 
-public class Manager {
+public class Manager implements ManagerInterface {
 
 
     private DaoLoanDisbursal daoLoanDisbursal;
@@ -21,5 +21,29 @@ public class Manager {
         this.daoLoanPaymentSchedule = daoLoanPaymentSchedule;
     }
 
+    @Override
+    public void disbursal(PaymentScheduleLos paymentScheduleLos) {
+
+    }
+
+    @Override
+    public int amountRoundOff(double amount) {
+        return 0;
+    }
+
+    @Override
+    public void saveRepaymentSchedule(PaymentScheduleLos paymentScheduleLos) {
+
+    }
+
+    @Override
+    public boolean dueAmountValidation(UserEmiDetails userEmiDetails) {
+        return false;
+    }
+
+    @Override
+    public void acceptPayment(UserEmiDetails userEmiDetails) {
+
+    }
 }
 
