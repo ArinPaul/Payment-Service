@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller implements ControllerService {
 
 
-
-    private APICaller call;
     private Manager manager;
+    private APICaller caller;
 
     @Autowired
     public Controller(Manager theManager){
         this.manager = theManager;
-        this.call = APICaller.getInstance();
+        this.caller = APICaller.getInstance();
     }
 
     @PostMapping("/payments/api/loanDisbursal")
@@ -33,7 +32,12 @@ public class Controller implements ControllerService {
         manager.saveRepaymentSchedule(paymentSchedule);
         //Disburse Loan
         //Communication service API call to notify user
-        return new ResponseEntity<PaymentScheduleLos>(HttpStatus.OK);
+//        try{
+//            caller.APICall(""); //Communication Service API EndPoint
+//        }catch(Exception e){
+//
+//        }
+        return new ResponseEntity<PaymentScheduleLos>(paymentSchedule,HttpStatus.OK);
     }
 
     @PostMapping(path = "/payments/api/emiPayment", consumes = "application/json")
@@ -42,9 +46,14 @@ public class Controller implements ControllerService {
         //LOS API call to check if loan is open
         //Check database to verify due amount
         //Accept payment and call communication service API to notify use
-        System.out.println(emiDetails);
 
-        return new ResponseEntity<UserEmiDetails>(HttpStatus.OK);
+//        try{
+//            caller.APICall(""); //Communication Service API EndPoint
+//        }catch(Exception e){
+//
+//        }
+
+        return new ResponseEntity<UserEmiDetails>(emiDetails,HttpStatus.OK);
     }
 
 
