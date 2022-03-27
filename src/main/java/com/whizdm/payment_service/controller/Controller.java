@@ -1,5 +1,4 @@
 package com.whizdm.payment_service.controller;
-
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
 import com.whizdm.payment_service.manager.Manager;
@@ -9,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
+@RequestMapping("/payments/api")
 public class Controller implements ControllerService {
 
 
@@ -26,37 +26,86 @@ public class Controller implements ControllerService {
         this.caller = APICaller.getInstance();
     }
 
-    @PostMapping("/payments/api/loanDisbursal")
-    public ResponseEntity<PaymentScheduleLos> loanSaveSchedule(PaymentScheduleLos paymentSchedule){
+    @PostMapping("/loanDisbursal")
+    public ResponseEntity<String> loanSaveSchedule(PaymentScheduleLos paymentSchedule) {
         //Save Repayment Schedule
-        manager.saveRepaymentSchedule(paymentSchedule);
+        try {
+            manager.saveRepaymentSchedule(paymentSchedule);
+        }catch (Exception e){
+            System.out.println("Saving Failed");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         //Disburse Loan
+        try {
+            manager.disbursal(paymentSchedule);
+        }catch (Exception e){
+            System.out.println("Loan Disbursal Failed");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         //Communication service API call to notify user
-//        try{
-//            caller.APICall(""); //Communication Service API EndPoint
-//        }catch(Exception e){
-//
-//        }
-        return new ResponseEntity<PaymentScheduleLos>(paymentSchedule,HttpStatus.OK);
+        try{
+            caller.APICall(""); //Communication Service API EndPoint
+        }catch(Exception e){
+            System.out.println("Communication API for Loan Disbursal Failed");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<String>("Process Completed Successfully",HttpStatus.OK);
     }
 
-    @PostMapping(path = "/payments/api/emiPayment", consumes = "application/json")
-    public ResponseEntity<UserEmiDetails> loanPayEmi(@RequestBody UserEmiDetails emiDetails){
+    @PostMapping(path = "/emiPayment", consumes = "application/json")
+    public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails){
         //AuthToken Validation API Call
+        try{
+            caller.APICall(""); //Auth Service API EndPoint
+        }catch(Exception e){
+            System.out.println("Auth service API call failed");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         //LOS API call to check if loan is open
+        try{
+            caller.APICall(""); //LOS Service API EndPoint
+        }catch(Exception e){
+            System.out.println("LOS Service API Call failed for validation");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         //Check database to verify due amount
-        //Accept payment and call communication service API to notify use
+        boolean validAmount = false;
+        try {
+            validAmount = manager.dueAmountValidation(emiDetails);
+        }catch (Exception e){
+            System.out.println("Due amount validation failed");
+            return new ResponseEntity<String>("Couldn't verify the due amount.",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-//        try{
-//            caller.APICall(""); //Communication Service API EndPoint
-//        }catch(Exception e){
-//
-//        }
+        //Accept payment if amount is valid
+        if(validAmount){
+            try{
+                manager.acceptPayment(emiDetails);
+            }catch (Exception e){
+                System.out.println("Payment Acceptance Failed");
+                return new ResponseEntity<String>("Payment Failed To process",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else{
+            return new ResponseEntity<String>("Invalid Due Amount. Please enter a valid amount.",HttpStatus.BAD_REQUEST);
+            }
 
-        return new ResponseEntity<UserEmiDetails>(emiDetails,HttpStatus.OK);
+        //Communication service API call to notify use
+        try{
+            caller.APICall(""); //Auth Service API EndPoint
+        }catch(Exception e){
+            System.out.println("Communication service API call failed");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+
+        return new ResponseEntity<String>("EMI Payment Successfully Completed",HttpStatus.OK);
     }
-
-
 
 
 
