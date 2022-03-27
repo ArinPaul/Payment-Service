@@ -38,3 +38,12 @@ CREATE TABLE loan_disbursal
     disbursal_utr_id  VARCHAR(20) 
 );
 
+CREATE TABLE log_payment_service
+(
+    id INT PRIMARY KEY,
+    loan_application_id BIGINT ,
+    operation VARCHAR(10),
+    operation_time TIMESTAMP,
+    entity_name  VARCHAR(10)
+);
+
