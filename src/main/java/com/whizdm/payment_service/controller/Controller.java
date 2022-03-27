@@ -3,7 +3,9 @@ package com.whizdm.payment_service.controller;
 
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
+import com.whizdm.payment_service.manager.Manager;
 import com.whizdm.payment_service.utils.APICaller.APICaller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,10 +14,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Controller implements ControllerService {
-    APICaller call = APICaller.getInstance();
+
+
+
+    private APICaller call;
+    private Manager manager;
+
+    @Autowired
+    public Controller(Manager theManager){
+        this.manager = theManager;
+        this.call = APICaller.getInstance();
+    }
+
     @PostMapping("/payments/api/loanDisbursal")
     public PaymentScheduleLos loanSaveSchedule(PaymentScheduleLos paymentSchedule){
         //Save Repayment Schedule
+        manager.saveRepaymentSchedule(paymentSchedule);
         //Disburse Loan
         //Communication service API call to notify user
         return paymentSchedule;

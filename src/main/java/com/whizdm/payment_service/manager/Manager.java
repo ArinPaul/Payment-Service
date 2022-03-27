@@ -5,8 +5,10 @@ import com.whizdm.payment_service.dao.DaoLoanPayment;
 import com.whizdm.payment_service.dao.DaoLoanPaymentSchedule;
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class Manager implements ManagerInterface {
 
 
@@ -14,7 +16,7 @@ public class Manager implements ManagerInterface {
     private DaoLoanPayment daoLoanPayment;
     private DaoLoanPaymentSchedule daoLoanPaymentSchedule ;
 
-
+    @Autowired
     public Manager(DaoLoanDisbursal daoLoanDisbursal, DaoLoanPayment daoLoanPayment, DaoLoanPaymentSchedule daoLoanPaymentSchedule) {
         this.daoLoanDisbursal = daoLoanDisbursal;
         this.daoLoanPayment = daoLoanPayment;
@@ -34,6 +36,7 @@ public class Manager implements ManagerInterface {
     @Override
     public void saveRepaymentSchedule(PaymentScheduleLos paymentScheduleLos) {
 
+        return;
     }
 
     @Override
