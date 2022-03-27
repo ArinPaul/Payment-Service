@@ -10,10 +10,10 @@ public class LoanDisbursal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private int id;
 
     @Column(name = "loan_application_id")
-    private String loanApplicationId;
+    private long loanApplicationId;
 
     @Column(name = "partner_id")
     private int partnerId;
@@ -22,7 +22,7 @@ public class LoanDisbursal {
     private long bankAccountNumber;
 
     @Column(name = "amount")
-    private int amount;
+    private double amount;
 
     @Column(name = "disbursal_date")
     private Date disbursalDate;
@@ -34,7 +34,7 @@ public class LoanDisbursal {
 
     }
 
-    public LoanDisbursal(String loanApplicationId, int partnerId, long bankAccountNumber, int amount, Date disbursalDate, String disbursalUtrId) {
+    public LoanDisbursal(long loanApplicationId, int partnerId, long bankAccountNumber, double amount, Date disbursalDate, String disbursalUtrId) {
         this.loanApplicationId = loanApplicationId;
         this.partnerId = partnerId;
         this.bankAccountNumber = bankAccountNumber;
@@ -43,19 +43,19 @@ public class LoanDisbursal {
         this.disbursalUtrId = disbursalUtrId;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getLoanApplicationId() {
+    public long getLoanApplicationId() {
         return loanApplicationId;
     }
 
-    public void setLoanApplicationId(String loanApplicationId) {
+    public void setLoanApplicationId(long loanApplicationId) {
         this.loanApplicationId = loanApplicationId;
     }
 
@@ -75,11 +75,11 @@ public class LoanDisbursal {
         this.bankAccountNumber = bankAccountNumber;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
