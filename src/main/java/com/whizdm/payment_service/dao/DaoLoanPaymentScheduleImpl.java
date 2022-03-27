@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
 
 @Repository
 public class DaoLoanPaymentScheduleImpl implements DaoLoanPaymentSchedule{
@@ -32,14 +34,18 @@ public class DaoLoanPaymentScheduleImpl implements DaoLoanPaymentSchedule{
     public void updateLoanPaymentSchedule() {
 
         Session currentSession = entityManager.unwrap(Session.class);
-
+        Query theQuery = currentSession.createQuery("");
     }
 
     @Override
     @Transactional
-    public void retrieveLoanPayment() {
+    public List<LoanPaymentSchedule> retrieveLoanPayment(long theLoanApplicationId) {
 
         Session currentSession = entityManager.unwrap(Session.class);
+        Query theQuery = currentSession.createQuery("from loan_payment_schedule where loan_application_id =: Id");
+        theQuery.setParameter("Id",theLoanApplicationId);
+        List<LoanPaymentSchedule> list = theQuery.getResultList();
+        return list;
 
     }
 }
