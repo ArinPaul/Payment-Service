@@ -1,17 +1,41 @@
 package com.whizdm.payment_service.entity;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "loan_payment")
 public class LoanPayment {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "loan_application_id")
     private String loanApplicationId;
+
+    @Column(name = "paid_amount")
     private int paidAmount;
+
+    @Column(name = "payment_utr_id")
     private String paymentUtrId;
+
+    @Column(name = "payment_mode")
     private String paymentMode;
+
+    @Column(name = "payment_date")
     private Date paymentDate;
+
+    @Column(name = "payment_status")
     private String paymentStatus;
+
+    @Column(name = "failure_reason")
     private String failureReason;
+
+    public LoanPayment(){
+
+    }
 
     public LoanPayment(String loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason) {
         this.loanApplicationId = loanApplicationId;
@@ -85,5 +109,19 @@ public class LoanPayment {
 
     public void setFailureReason(String failureReason) {
         this.failureReason = failureReason;
+    }
+
+    @Override
+    public String toString() {
+        return "LoanPayment{" +
+                "id='" + id + '\'' +
+                ", loanApplicationId='" + loanApplicationId + '\'' +
+                ", paidAmount=" + paidAmount +
+                ", paymentUtrId='" + paymentUtrId + '\'' +
+                ", paymentMode='" + paymentMode + '\'' +
+                ", paymentDate=" + paymentDate +
+                ", paymentStatus='" + paymentStatus + '\'' +
+                ", failureReason='" + failureReason + '\'' +
+                '}';
     }
 }

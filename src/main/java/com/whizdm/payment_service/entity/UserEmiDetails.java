@@ -46,4 +46,15 @@ public class UserEmiDetails {
     public void setPayment_mode(String payment_mode) {
         this.payment_mode = payment_mode;
     }
+
+    @Override
+    public String toString() {
+        return "UserEmiDetails{" +
+                "user_id=" + user_id +
+                ", auth_token='" + auth_token + '\'' +
+                ", loan_id='" + loan_id + '\'' +
+                ", emi_amount=" + emi_amount +
+                ", payment_mode='" + payment_mode + '\'' +
+                '}';
+    }
 }

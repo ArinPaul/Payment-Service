@@ -1,21 +1,47 @@
 package com.whizdm.payment_service.entity;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "loan_payment_schedule")
 public class LoanPaymentSchedule {
 
-    private String id ;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id ;
+
+    @Column(name = "loan_application_id")
     private long loanApplicationId ;
+
+    @Column(name = "emi")
     private float emi ;
+
+    @Column(name = "due_date")
     private Date dueDate ;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "due_amount")
     private float dueAmount ;
+
+    @Column(name = "principle_amount")
     private float principleAmount ;
+
+    @Column(name = "interest_amount")
     private float interestAmount ;
 
-    public LoanPaymentSchedule(long loanApplicationId, float emi, Date dueDate, float dueAmount, float principleAmount, float interestAmount) {
+    public LoanPaymentSchedule(){
+
+    }
+
+    public LoanPaymentSchedule(long loanApplicationId, float emi, Date dueDate, String status, float dueAmount, float principleAmount, float interestAmount) {
         this.loanApplicationId = loanApplicationId;
         this.emi = emi;
         this.dueDate = dueDate;
+        this.status = status;
         this.dueAmount = dueAmount;
         this.principleAmount = principleAmount;
         this.interestAmount = interestAmount;
@@ -23,13 +49,11 @@ public class LoanPaymentSchedule {
 
     //    getters and setters
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(int id) { this.id = id; }
 
     public long getLoanApplicationId() {
         return loanApplicationId;
@@ -55,6 +79,14 @@ public class LoanPaymentSchedule {
         this.dueDate = dueDate;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public float getDueAmount() {
         return dueAmount;
     }
@@ -77,5 +109,18 @@ public class LoanPaymentSchedule {
 
     public void setInterestAmount(float interestAmount) {
         this.interestAmount = interestAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "LoanPaymentSchedule{" +
+                "id='" + id + '\'' +
+                ", loanApplicationId=" + loanApplicationId +
+                ", emi=" + emi +
+                ", dueDate=" + dueDate +
+                ", dueAmount=" + dueAmount +
+                ", principleAmount=" + principleAmount +
+                ", interestAmount=" + interestAmount +
+                '}';
     }
 }
