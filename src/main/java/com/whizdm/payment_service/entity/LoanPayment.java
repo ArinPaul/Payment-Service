@@ -10,10 +10,10 @@ public class LoanPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private int id;
 
     @Column(name = "loan_application_id")
-    private String loanApplicationId;
+    private long loanApplicationId;
 
     @Column(name = "paid_amount")
     private int paidAmount;
@@ -37,7 +37,7 @@ public class LoanPayment {
 
     }
 
-    public LoanPayment(String loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason) {
+    public LoanPayment(long loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason) {
         this.loanApplicationId = loanApplicationId;
         this.paidAmount = paidAmount;
         this.paymentUtrId = paymentUtrId;
@@ -47,19 +47,19 @@ public class LoanPayment {
         this.failureReason = failureReason;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getLoanApplicationId() {
+    public long getLoanApplicationId() {
         return loanApplicationId;
     }
 
-    public void setLoanApplicationId(String loanApplicationId) {
+    public void setLoanApplicationId(long loanApplicationId) {
         this.loanApplicationId = loanApplicationId;
     }
 

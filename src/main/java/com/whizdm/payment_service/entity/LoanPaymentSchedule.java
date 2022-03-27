@@ -21,7 +21,7 @@ public class LoanPaymentSchedule {
     @Column(name = "due_date")
     private Date dueDate ;
 
-    @Column(name = "status")
+    @Column(name = "payment_status")
     private String status;
 
     @Column(name = "due_amount")
