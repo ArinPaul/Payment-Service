@@ -10,7 +10,7 @@ public class LoanPaymentSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id ;
+    private int id ;
 
     @Column(name = "loan_application_id")
     private long loanApplicationId ;
@@ -20,6 +20,9 @@ public class LoanPaymentSchedule {
 
     @Column(name = "due_date")
     private Date dueDate ;
+
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "due_amount")
     private float dueAmount ;
@@ -34,10 +37,11 @@ public class LoanPaymentSchedule {
 
     }
 
-    public LoanPaymentSchedule(long loanApplicationId, float emi, Date dueDate, float dueAmount, float principleAmount, float interestAmount) {
+    public LoanPaymentSchedule(long loanApplicationId, float emi, Date dueDate, String status, float dueAmount, float principleAmount, float interestAmount) {
         this.loanApplicationId = loanApplicationId;
         this.emi = emi;
         this.dueDate = dueDate;
+        this.status = status;
         this.dueAmount = dueAmount;
         this.principleAmount = principleAmount;
         this.interestAmount = interestAmount;
@@ -45,11 +49,11 @@ public class LoanPaymentSchedule {
 
     //    getters and setters
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     public long getLoanApplicationId() {
         return loanApplicationId;
@@ -73,6 +77,14 @@ public class LoanPaymentSchedule {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public float getDueAmount() {
