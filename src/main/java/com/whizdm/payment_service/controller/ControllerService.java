@@ -7,6 +7,6 @@ import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 
 public interface ControllerService {
-    public ResponseEntity<PaymentScheduleLos> loanSaveSchedule (PaymentScheduleLos paymentSchedule);
-    public ResponseEntity<UserEmiDetails> loanPayEmi (UserEmiDetails details);
+    public ResponseEntity<String> loanSaveSchedule (PaymentScheduleLos paymentSchedule);
+    public ResponseEntity<String> loanPayEmi (UserEmiDetails details);
 }
