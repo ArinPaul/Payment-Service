@@ -13,16 +13,16 @@ public class LoanDisbursal {
     private int id;
 
     @Column(name = "loan_application_id")
-    private long loanApplicationId;
+    private String loanApplicationId;
 
     @Column(name = "partner_id")
     private int partnerId;
 
     @Column(name = "bank_account_number")
-    private long bankAccountNumber;
+    private String bankAccountNumber;
 
     @Column(name = "amount")
-    private double amount;
+    private int amount;
 
     @Column(name = "disbursal_date")
     private Date disbursalDate;
@@ -34,7 +34,7 @@ public class LoanDisbursal {
 
     }
 
-    public LoanDisbursal(long loanApplicationId, int partnerId, long bankAccountNumber, double amount, Date disbursalDate, String disbursalUtrId) {
+    public LoanDisbursal(String loanApplicationId, int partnerId, String bankAccountNumber, int amount, Date disbursalDate, String disbursalUtrId) {
         this.loanApplicationId = loanApplicationId;
         this.partnerId = partnerId;
         this.bankAccountNumber = bankAccountNumber;
@@ -51,11 +51,11 @@ public class LoanDisbursal {
         this.id = id;
     }
 
-    public long getLoanApplicationId() {
+    public String getLoanApplicationId() {
         return loanApplicationId;
     }
 
-    public void setLoanApplicationId(long loanApplicationId) {
+    public void setLoanApplicationId(String loanApplicationId) {
         this.loanApplicationId = loanApplicationId;
     }
 
@@ -67,19 +67,19 @@ public class LoanDisbursal {
         this.partnerId = partnerId;
     }
 
-    public long getBankAccountNumber() {
+    public String getBankAccountNumber() {
         return bankAccountNumber;
     }
 
-    public void setBankAccountNumber(long bankAccountNumber) {
+    public void setBankAccountNumber(String bankAccountNumber) {
         this.bankAccountNumber = bankAccountNumber;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 

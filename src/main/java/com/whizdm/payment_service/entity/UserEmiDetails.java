@@ -1,17 +1,17 @@
 package com.whizdm.payment_service.entity;
 
 public class UserEmiDetails {
-    private int user_id;
+    private String user_id;
     private String auth_token;
     private String loan_id;
     private float emi_amount;
     private String payment_mode;
 
-    public int getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 

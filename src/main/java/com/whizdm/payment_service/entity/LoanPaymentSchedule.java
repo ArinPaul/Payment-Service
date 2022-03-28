@@ -13,10 +13,10 @@ public class LoanPaymentSchedule {
     private int id ;
 
     @Column(name = "loan_application_id")
-    private long loanApplicationId ;
+    private String loanApplicationId ;
 
     @Column(name = "emi")
-    private float emi ;
+    private int emi ;
 
     @Column(name = "due_date")
     private Date dueDate ;
@@ -25,7 +25,7 @@ public class LoanPaymentSchedule {
     private String status;
 
     @Column(name = "due_amount")
-    private float dueAmount ;
+    private int dueAmount ;
 
     @Column(name = "principle_amount")
     private float principleAmount ;
@@ -37,7 +37,7 @@ public class LoanPaymentSchedule {
 
     }
 
-    public LoanPaymentSchedule(long loanApplicationId, float emi, Date dueDate, String status, float dueAmount, float principleAmount, float interestAmount) {
+    public LoanPaymentSchedule(String loanApplicationId, int emi, Date dueDate, String status, int dueAmount, float principleAmount, float interestAmount) {
         this.loanApplicationId = loanApplicationId;
         this.emi = emi;
         this.dueDate = dueDate;
@@ -55,19 +55,19 @@ public class LoanPaymentSchedule {
 
     public void setId(int id) { this.id = id; }
 
-    public long getLoanApplicationId() {
+    public String getLoanApplicationId() {
         return loanApplicationId;
     }
 
-    public void setLoanApplicationId(long loanApplicationId) {
+    public void setLoanApplicationId(String loanApplicationId) {
         this.loanApplicationId = loanApplicationId;
     }
 
-    public float getEmi() {
+    public int getEmi() {
         return emi;
     }
 
-    public void setEmi(float emi) {
+    public void setEmi(int emi) {
         this.emi = emi;
     }
 
@@ -87,11 +87,11 @@ public class LoanPaymentSchedule {
         this.status = status;
     }
 
-    public float getDueAmount() {
+    public int getDueAmount() {
         return dueAmount;
     }
 
-    public void setDueAmount(float dueAmount) {
+    public void setDueAmount(int dueAmount) {
         this.dueAmount = dueAmount;
     }
 

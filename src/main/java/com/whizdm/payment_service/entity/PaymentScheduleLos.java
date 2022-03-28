@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class PaymentScheduleLos {
     private String loan_id;
-    private long user_id;
+    private String user_id;
     private double disbursal_amount;
     private double first_emi;
     private double last_emi;
@@ -12,9 +12,9 @@ public class PaymentScheduleLos {
     private float interest_component;
     private Date due_date;
     private int partner_id;
-    private long bank_account_no;
+    private String bank_account_no;
 
-    public PaymentScheduleLos(String loan_id, long user_id, double disbursal_amount, double first_emi, double last_emi, double principal_amount, float interest_component, Date due_date, int partner_id, long bank_account_no) {
+    public PaymentScheduleLos(String loan_id, String user_id, double disbursal_amount, double first_emi, double last_emi, double principal_amount, float interest_component, Date due_date, int partner_id, String bank_account_no) {
         this.loan_id = loan_id;
         this.user_id = user_id;
         this.disbursal_amount = disbursal_amount;
@@ -35,11 +35,11 @@ public class PaymentScheduleLos {
         this.loan_id = loan_id;
     }
 
-    public long getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(long user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 
@@ -99,11 +99,11 @@ public class PaymentScheduleLos {
         this.partner_id = partner_id;
     }
 
-    public long getBank_account_no() {
+    public String getBank_account_no() {
         return bank_account_no;
     }
 
-    public void setBank_account_no(long bank_account_no) {
+    public void setBank_account_no(String bank_account_no) {
         this.bank_account_no = bank_account_no;
     }
 

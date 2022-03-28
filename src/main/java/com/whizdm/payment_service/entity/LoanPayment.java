@@ -13,7 +13,7 @@ public class LoanPayment {
     private int id;
 
     @Column(name = "loan_application_id")
-    private long loanApplicationId;
+    private String loanApplicationId;
 
     @Column(name = "paid_amount")
     private int paidAmount;
@@ -37,7 +37,7 @@ public class LoanPayment {
 
     }
 
-    public LoanPayment(long loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason) {
+    public LoanPayment(String loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason) {
         this.loanApplicationId = loanApplicationId;
         this.paidAmount = paidAmount;
         this.paymentUtrId = paymentUtrId;
@@ -55,11 +55,11 @@ public class LoanPayment {
         this.id = id;
     }
 
-    public long getLoanApplicationId() {
+    public String getLoanApplicationId() {
         return loanApplicationId;
     }
 
-    public void setLoanApplicationId(long loanApplicationId) {
+    public void setLoanApplicationId(String loanApplicationId) {
         this.loanApplicationId = loanApplicationId;
     }
 
