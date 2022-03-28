@@ -9,12 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 @Repository
-public class DaoLoanDisbursalImpl implements DaoLoanDisbursal{
+public class LoanDisbursalDaoImpl implements LoanDisbursalDao{
 
     private EntityManager entityManager;
 
     @Autowired
-    public DaoLoanDisbursalImpl(EntityManager theEntityManager){
+    public LoanDisbursalDaoImpl(EntityManager theEntityManager){
         this.entityManager = theEntityManager;
     }
 
@@ -24,6 +24,5 @@ public class DaoLoanDisbursalImpl implements DaoLoanDisbursal{
 
         Session currentSession = entityManager.unwrap(Session.class);
         currentSession.saveOrUpdate(loanDisbursal);
-        return;
     }
 }

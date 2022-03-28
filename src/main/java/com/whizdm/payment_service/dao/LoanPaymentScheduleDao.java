@@ -4,7 +4,7 @@ import com.whizdm.payment_service.entity.LoanPaymentSchedule;
 
 import java.util.List;
 
-public interface DaoLoanPaymentSchedule {
+public interface LoanPaymentScheduleDao {
 
     public void saveInitialSchedule(LoanPaymentSchedule loanPaymentSchedule);
 

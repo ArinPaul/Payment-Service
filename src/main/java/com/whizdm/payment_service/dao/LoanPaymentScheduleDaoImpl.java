@@ -11,12 +11,12 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Repository
-public class DaoLoanPaymentScheduleImpl implements DaoLoanPaymentSchedule{
+public class LoanPaymentScheduleDaoImpl implements LoanPaymentScheduleDao{
 
     private EntityManager entityManager;
 
     @Autowired
-    public DaoLoanPaymentScheduleImpl(EntityManager theEntityManager){
+    public LoanPaymentScheduleDaoImpl(EntityManager theEntityManager){
         this.entityManager = theEntityManager;
     }
 
@@ -26,7 +26,6 @@ public class DaoLoanPaymentScheduleImpl implements DaoLoanPaymentSchedule{
 
         Session currentSession = entityManager.unwrap(Session.class);
         currentSession.saveOrUpdate(loanPaymentSchedule);
-        return;
     }
 
     @Override

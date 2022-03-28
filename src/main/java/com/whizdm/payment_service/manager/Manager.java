@@ -1,8 +1,8 @@
 package com.whizdm.payment_service.manager;
 
-import com.whizdm.payment_service.dao.DaoLoanDisbursal;
-import com.whizdm.payment_service.dao.DaoLoanPayment;
-import com.whizdm.payment_service.dao.DaoLoanPaymentSchedule;
+import com.whizdm.payment_service.dao.LoanDisbursalDao;
+import com.whizdm.payment_service.dao.LoanPaymentDao;
+import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
 import com.whizdm.payment_service.entity.LoanDisbursal;
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
@@ -14,17 +14,17 @@ import java.util.Random;
 public class Manager implements ManagerInterface {
 
 
-    private DaoLoanDisbursal daoLoanDisbursal;
-    private DaoLoanPayment daoLoanPayment;
-    private DaoLoanPaymentSchedule daoLoanPaymentSchedule ;
+    private LoanDisbursalDao loanDisbursalDao;
+    private LoanPaymentDao loanPaymentDao;
+    private LoanPaymentScheduleDao loanPaymentScheduleDao;
 
     Random random = new Random();
 
     @Autowired
-    public Manager(DaoLoanDisbursal daoLoanDisbursal, DaoLoanPayment daoLoanPayment, DaoLoanPaymentSchedule daoLoanPaymentSchedule) {
-        this.daoLoanDisbursal = daoLoanDisbursal;
-        this.daoLoanPayment = daoLoanPayment;
-        this.daoLoanPaymentSchedule = daoLoanPaymentSchedule;
+    public Manager(LoanDisbursalDao loanDisbursalDao, LoanPaymentDao loanPaymentDao, LoanPaymentScheduleDao loanPaymentScheduleDao) {
+        this.loanDisbursalDao = loanDisbursalDao;
+        this.loanPaymentDao = loanPaymentDao;
+        this.loanPaymentScheduleDao = loanPaymentScheduleDao;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Manager implements ManagerInterface {
                 paymentScheduleLos.getDisbursal_amount(),
                 new java.util.Date(),
                 Integer.toString(random.nextInt(99999999)));
-        daoLoanDisbursal.saveLoanDisbursal(theLoanDisbursal);
+        loanDisbursalDao.saveLoanDisbursal(theLoanDisbursal);
     }
 
     @Override
@@ -46,8 +46,6 @@ public class Manager implements ManagerInterface {
 
     @Override
     public void saveRepaymentSchedule(PaymentScheduleLos paymentScheduleLos) {
-
-        return;
     }
 
     @Override
@@ -57,7 +55,6 @@ public class Manager implements ManagerInterface {
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
-
     }
 }
 
