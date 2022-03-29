@@ -67,6 +67,8 @@ public class Manager implements ManagerInterface {
                     new Date()
             );
 
+            list.add(theLoanPaymentSchedule);
+
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(tmp);
             calendar.add(calendar.MONTH,1);
