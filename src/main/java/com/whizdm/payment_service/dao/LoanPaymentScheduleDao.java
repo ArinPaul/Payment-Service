@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface LoanPaymentScheduleDao {
 
-    public void saveInitialSchedule(LoanPaymentSchedule loanPaymentSchedule);
+    public void saveInitialSchedule(List<LoanPaymentSchedule> loanPaymentSchedule);
 
-    public void updateLoanPaymentSchedule();
+    public void updateLoanPaymentSchedule(List<LoanPaymentSchedule> theLoanPaymentSchedule);
 
-    public List<LoanPaymentSchedule> retrieveLoanPayment(long theLoanApplicationId);
+    public List<LoanPaymentSchedule> retrieveLoanPayment(String theLoanApplicationId);
 }

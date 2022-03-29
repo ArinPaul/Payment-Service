@@ -22,23 +22,36 @@ public class LoanPaymentScheduleDaoImpl implements LoanPaymentScheduleDao{
 
     @Override
     @Transactional
-    public void saveInitialSchedule(LoanPaymentSchedule loanPaymentSchedule) {
+    public void saveInitialSchedule(List<LoanPaymentSchedule> loanPaymentSchedule) {
 
         Session currentSession = entityManager.unwrap(Session.class);
-        currentSession.saveOrUpdate(loanPaymentSchedule);
+        for(LoanPaymentSchedule val : loanPaymentSchedule){
+            currentSession.saveOrUpdate(val);
+        }
     }
 
     @Override
     @Transactional
-    public void updateLoanPaymentSchedule() {
+    public void updateLoanPaymentSchedule(List<LoanPaymentSchedule> theLoanPaymentSchedule) {
 
         Session currentSession = entityManager.unwrap(Session.class);
-        Query theQuery = currentSession.createQuery("");
+        for(LoanPaymentSchedule val : theLoanPaymentSchedule){
+            Query theQuery = currentSession.createQuery("update loan_payment_schedule set payment_utr_id := paymentUtrId "+
+                   "payment_status := paymentStatus " + "due_amount := dueAmount " + "date_modified :=  dateModified "+
+                    "where id := Id");
+            theQuery.setParameter("paymentUtrId", val.getPaymentUtrId());
+            theQuery.setParameter("paymentStatus", val.getStatus());
+            theQuery.setParameter("dueAmount", val.getDueAmount());
+            theQuery.setParameter("dateModified", val.getDateModified());
+            theQuery.setParameter("Id", val.getId());
+
+            theQuery.executeUpdate();
+        }
     }
 
     @Override
     @Transactional
-    public List<LoanPaymentSchedule> retrieveLoanPayment(long theLoanApplicationId) {
+    public List<LoanPaymentSchedule> retrieveLoanPayment(String theLoanApplicationId) {
 
         Session currentSession = entityManager.unwrap(Session.class);
         Query theQuery = currentSession.createQuery("from loan_payment_schedule where loan_application_id =: Id");

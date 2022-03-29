@@ -30,12 +30,7 @@ public class Manager implements ManagerInterface {
     @Override
     public void disbursal(PaymentScheduleLos paymentScheduleLos) {
 
-        LoanDisbursal theLoanDisbursal = new LoanDisbursal(paymentScheduleLos.getLoan_id(),
-                paymentScheduleLos.getPartner_id(),
-                paymentScheduleLos.getBank_account_no(),
-                (int)paymentScheduleLos.getDisbursal_amount(),
-                new java.util.Date(),
-                Integer.toString(random.nextInt(99999999)));
+
         loanDisbursalDao.saveLoanDisbursal(theLoanDisbursal);
     }
 
