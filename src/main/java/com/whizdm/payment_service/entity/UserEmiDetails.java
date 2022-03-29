@@ -4,7 +4,7 @@ public class UserEmiDetails {
     private String user_id;
     private String auth_token;
     private String loan_id;
-    private float emi_amount;
+    private int emi_amount;
     private String payment_mode;
 
     public String getUser_id() {
@@ -31,11 +31,11 @@ public class UserEmiDetails {
         this.loan_id = loan_id;
     }
 
-    public float getEmi_amount() {
+    public int getEmi_amount() {
         return emi_amount;
     }
 
-    public void setEmi_amount(float emi_amount) {
+    public void setEmi_amount(int emi_amount) {
         this.emi_amount = emi_amount;
     }
 
