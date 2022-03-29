@@ -8,6 +8,8 @@ import com.whizdm.payment_service.utility.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -77,17 +79,40 @@ public class Manager implements ManagerInterface {
     @Override
     public boolean dueAmountValidation(UserEmiDetails userEmiDetails) {
         double enteredAmount = userEmiDetails.getEmi_amount();
-        return false;
+        List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
+
+        LocalDate presentDate = LocalDate.now();
+        presentDate = presentDate.plusMonths(1);
+
+        int totalDueAmount = 0;
+        int emi = list.get(0).getEmi();
+
+        for(LoanPaymentSchedule val : list){
+            LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if(due.compareTo(presentDate) < 0){
+                totalDueAmount += val.getDueAmount();
+            }
+        }
+
+        if(userEmiDetails.getEmi_amount() == totalDueAmount || userEmiDetails.getEmi_amount() == emi){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
+
+
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
         if(dueAmountValidation(userEmiDetails)) {
             //make entry in loan payment with status = success
+            String utr = StringRandom.get();
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
                     userEmiDetails.getEmi_amount(),
-                    StringRandom.get(),
+                    utr,
                     userEmiDetails.getPayment_mode(),
                     new Date(),
                     "Success",
@@ -99,7 +124,36 @@ public class Manager implements ManagerInterface {
             //update loan_payment_schedule
             List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
 
+            if(userEmiDetails.getEmi_amount() == list.get(0).getEmi()){
+                for(LoanPaymentSchedule val : list){
+                    if(val.getDueAmount() !=0){
+                        val.setDueAmount(0);
+                        val.setPaymentUtrId(utr);// utr
+                        val.setStatus("Paid");
+                        val.setDateModified(new Date());
+                        break;
+                    }
+                }
+
+            }
+            else{
+                LocalDate presentDate = LocalDate.now();
+                presentDate = presentDate.plusMonths(1);
+                for(LoanPaymentSchedule val : list){
+                    LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    if(due.compareTo(presentDate) < 0){
+                        val.setDueAmount(0);
+                        val.setPaymentUtrId(utr);
+                        val.setDateModified(new Date());
+                        val.setStatus("Paid");
+                    }
+                }
+            }
+
             loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
+
+
+            //if all emis paid
 
         }
         else {
@@ -116,6 +170,17 @@ public class Manager implements ManagerInterface {
                     new Date());
             loanPaymentDao.saveLoanPayment(loanPayment);
         }
+    }
+
+    @Override
+    public boolean check(String loanId){
+        List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(loanId);
+        for(LoanPaymentSchedule val : list){
+            if(val.getDueAmount() != 0){
+                return false;
+            }
+        }
+        return true;
     }
 }
 

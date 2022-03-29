@@ -15,4 +15,5 @@ public interface ManagerInterface {
 
     public void acceptPayment(UserEmiDetails userEmiDetails);
 
+    public boolean check(String loanId);
 }
