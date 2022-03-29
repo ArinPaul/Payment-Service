@@ -3,12 +3,12 @@ package com.whizdm.payment_service.manager;
 import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
-import com.whizdm.payment_service.entity.LoanDisbursal;
-import com.whizdm.payment_service.entity.PaymentScheduleLos;
-import com.whizdm.payment_service.entity.UserEmiDetails;
+import com.whizdm.payment_service.entity.*;
+import com.whizdm.payment_service.utility.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Random;
+
+import java.util.*;
 
 @Service
 public class Manager implements ManagerInterface {
@@ -30,8 +30,16 @@ public class Manager implements ManagerInterface {
     @Override
     public void disbursal(PaymentScheduleLos paymentScheduleLos) {
 
-
-        loanDisbursalDao.saveLoanDisbursal(theLoanDisbursal);
+        LoanDisbursal loanDisbursal = new LoanDisbursal(
+                paymentScheduleLos.getLoan_id(),
+                paymentScheduleLos.getPartner_id(),
+                paymentScheduleLos.getBank_account_no(),
+                (int)paymentScheduleLos.getDisbursal_amount(),
+                new Date(),
+                StringRandom.get(),
+                new Date(),
+                new Date());
+        loanDisbursalDao.saveLoanDisbursal(loanDisbursal);
     }
 
     @Override
@@ -42,7 +50,28 @@ public class Manager implements ManagerInterface {
 
     @Override
     public void saveRepaymentSchedule(PaymentScheduleLos paymentScheduleLos) {
+        //create loan_repayment_schedule
+        List<LoanPaymentSchedule> list = new ArrayList<>();
+        Date tmp = paymentScheduleLos.getDue_date();
+        for(int i=0;i<12;i++){
+            LoanPaymentSchedule theLoanPaymentSchedule = new LoanPaymentSchedule(
+                    paymentScheduleLos.getLoan_id(),
+                    (int)((i==11)?paymentScheduleLos.getLast_emi():paymentScheduleLos.getFirst_emi()),
+                    tmp,
+                    (int)((i==11)?paymentScheduleLos.getLast_emi():paymentScheduleLos.getFirst_emi()),
+                    (float) paymentScheduleLos.getPrincipal_amount(),
+                    paymentScheduleLos.getInterest_component(),
+                    new Date(),
+                    new Date()
+            );
 
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(tmp);
+            calendar.add(calendar.MONTH,1);
+            tmp = calendar.getTime();
+        }
+
+        loanPaymentScheduleDao.saveInitialSchedule(list);
     }
 
     @Override
@@ -53,6 +82,40 @@ public class Manager implements ManagerInterface {
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
+        if(dueAmountValidation(userEmiDetails)) {
+            //make entry in loan payment with status = success
+            LoanPayment loanPayment = new LoanPayment(
+                    userEmiDetails.getLoan_id(),
+                    userEmiDetails.getEmi_amount(),
+                    StringRandom.get(),
+                    userEmiDetails.getPayment_mode(),
+                    new Date(),
+                    "Success",
+                    "Not Applicable",
+                    new Date(),
+                    new Date());
+            loanPaymentDao.saveLoanPayment(loanPayment);
+
+            //update loan_payment_schedule
+            List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
+
+            loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
+
+        }
+        else {
+            //make entry in loan payment with status = failed
+            LoanPayment loanPayment = new LoanPayment(
+                    userEmiDetails.getLoan_id(),
+                    userEmiDetails.getEmi_amount(),
+                    StringRandom.get(),
+                    userEmiDetails.getPayment_mode(),
+                    new Date(),
+                    "Failed",
+                    "Invalid Amount",
+                    new Date(),
+                    new Date());
+            loanPaymentDao.saveLoanPayment(loanPayment);
+        }
     }
 }
 
