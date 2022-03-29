@@ -30,17 +30,25 @@ public class LoanDisbursal {
     @Column(name = "disbursal_utr_id")
     private String disbursalUtrId;
 
+    @Column(name = "date_created")
+    private Date dateCreated;
+
+    @Column(name = "date_modified")
+    private Date dateModified;
+
     public LoanDisbursal(){
 
     }
 
-    public LoanDisbursal(String loanApplicationId, int partnerId, String bankAccountNumber, int amount, Date disbursalDate, String disbursalUtrId) {
+    public LoanDisbursal(String loanApplicationId, int partnerId, String bankAccountNumber, int amount, Date disbursalDate, String disbursalUtrId, Date dateCreated, Date dateModified) {
         this.loanApplicationId = loanApplicationId;
         this.partnerId = partnerId;
         this.bankAccountNumber = bankAccountNumber;
         this.amount = amount;
         this.disbursalDate = disbursalDate;
         this.disbursalUtrId = disbursalUtrId;
+        this.dateCreated = dateCreated;
+        this.dateModified = dateModified;
     }
 
     public int getId() {
@@ -99,16 +107,34 @@ public class LoanDisbursal {
         this.disbursalUtrId = disbursalUtrId;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
+    }
+
     @Override
     public String toString() {
         return "LoanDisbursal{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", loanApplicationId='" + loanApplicationId + '\'' +
                 ", partnerId=" + partnerId +
-                ", bankAccountNumber=" + bankAccountNumber +
+                ", bankAccountNumber='" + bankAccountNumber + '\'' +
                 ", amount=" + amount +
                 ", disbursalDate=" + disbursalDate +
                 ", disbursalUtrId='" + disbursalUtrId + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", dateModified=" + dateModified +
                 '}';
     }
 }

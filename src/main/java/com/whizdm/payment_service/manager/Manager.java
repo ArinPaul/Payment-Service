@@ -47,6 +47,7 @@ public class Manager implements ManagerInterface {
 
     @Override
     public void saveRepaymentSchedule(PaymentScheduleLos paymentScheduleLos) {
+
     }
 
     @Override

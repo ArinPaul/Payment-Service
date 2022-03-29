@@ -15,6 +15,9 @@ public class LoanPaymentSchedule {
     @Column(name = "loan_application_id")
     private String loanApplicationId ;
 
+    @Column(name = "payment_utr_id")
+    private String paymentUtrId;
+
     @Column(name = "emi")
     private int emi ;
 
@@ -33,27 +36,34 @@ public class LoanPaymentSchedule {
     @Column(name = "interest_amount")
     private float interestAmount ;
 
+    @Column(name = "date_created")
+    private Date dateCreated;
+
+    @Column(name = "date_modified")
+    private Date dateModified;
+
     public LoanPaymentSchedule(){
 
     }
 
-    public LoanPaymentSchedule(String loanApplicationId, int emi, Date dueDate, String status, int dueAmount, float principleAmount, float interestAmount) {
+    public LoanPaymentSchedule(String loanApplicationId, int emi, Date dueDate, int dueAmount, float principleAmount, float interestAmount, Date dateCreated, Date dateModified) {
         this.loanApplicationId = loanApplicationId;
         this.emi = emi;
         this.dueDate = dueDate;
-        this.status = status;
         this.dueAmount = dueAmount;
         this.principleAmount = principleAmount;
         this.interestAmount = interestAmount;
+        this.dateCreated = dateCreated;
+        this.dateModified = dateModified;
     }
-
-    //    getters and setters
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getLoanApplicationId() {
         return loanApplicationId;
@@ -61,6 +71,14 @@ public class LoanPaymentSchedule {
 
     public void setLoanApplicationId(String loanApplicationId) {
         this.loanApplicationId = loanApplicationId;
+    }
+
+    public String getPaymentUtrId() {
+        return paymentUtrId;
+    }
+
+    public void setPaymentUtrId(String paymentUtrId) {
+        this.paymentUtrId = paymentUtrId;
     }
 
     public int getEmi() {
@@ -111,16 +129,36 @@ public class LoanPaymentSchedule {
         this.interestAmount = interestAmount;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
+    }
+
     @Override
     public String toString() {
         return "LoanPaymentSchedule{" +
-                "id='" + id + '\'' +
-                ", loanApplicationId=" + loanApplicationId +
+                "id=" + id +
+                ", loanApplicationId='" + loanApplicationId + '\'' +
+                ", paymentUtrId='" + paymentUtrId + '\'' +
                 ", emi=" + emi +
                 ", dueDate=" + dueDate +
+                ", status='" + status + '\'' +
                 ", dueAmount=" + dueAmount +
                 ", principleAmount=" + principleAmount +
                 ", interestAmount=" + interestAmount +
+                ", dateCreated=" + dateCreated +
+                ", dateModified=" + dateModified +
                 '}';
     }
 }

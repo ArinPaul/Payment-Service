@@ -33,11 +33,18 @@ public class LoanPayment {
     @Column(name = "failure_reason")
     private String failureReason;
 
+    @Column(name = "date_created")
+    private Date dateCreated;
+
+    @Column(name = "date_modified")
+    private Date dateModified;
+
+
     public LoanPayment(){
 
     }
 
-    public LoanPayment(String loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason) {
+    public LoanPayment(String loanApplicationId, int paidAmount, String paymentUtrId, String paymentMode, Date paymentDate, String paymentStatus, String failureReason, Date dateCreated, Date dateModified) {
         this.loanApplicationId = loanApplicationId;
         this.paidAmount = paidAmount;
         this.paymentUtrId = paymentUtrId;
@@ -45,6 +52,8 @@ public class LoanPayment {
         this.paymentDate = paymentDate;
         this.paymentStatus = paymentStatus;
         this.failureReason = failureReason;
+        this.dateCreated = dateCreated;
+        this.dateModified = dateModified;
     }
 
     public int getId() {
@@ -111,10 +120,26 @@ public class LoanPayment {
         this.failureReason = failureReason;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
+    }
+
     @Override
     public String toString() {
         return "LoanPayment{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", loanApplicationId='" + loanApplicationId + '\'' +
                 ", paidAmount=" + paidAmount +
                 ", paymentUtrId='" + paymentUtrId + '\'' +
@@ -122,6 +147,8 @@ public class LoanPayment {
                 ", paymentDate=" + paymentDate +
                 ", paymentStatus='" + paymentStatus + '\'' +
                 ", failureReason='" + failureReason + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", dateModified=" + dateModified +
                 '}';
     }
 }
