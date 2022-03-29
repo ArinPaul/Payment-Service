@@ -41,7 +41,8 @@ public class Manager implements ManagerInterface {
 
     @Override
     public int amountRoundOff(double amount) {
-        return 0;
+        int ans = (int)(amount*12) - (int)(Math.round(amount)*11);
+        return ans;
     }
 
     @Override
@@ -50,6 +51,7 @@ public class Manager implements ManagerInterface {
 
     @Override
     public boolean dueAmountValidation(UserEmiDetails userEmiDetails) {
+        double enteredAmount = userEmiDetails.getEmi_amount();
         return false;
     }
 

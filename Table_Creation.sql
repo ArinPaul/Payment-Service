@@ -1,6 +1,6 @@
-CREATE DATABASE PAYMENTSERVICE;
+CREATE DATABASE payment_service;
 
-USE PAYMENTSERVICE;
+USE payment_service;
 
 CREATE TABLE loan_payment_schedule
 (
