@@ -1,6 +1,5 @@
 package com.whizdm.payment_service.manager;
 
-import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
@@ -81,36 +80,43 @@ public class Manager implements ManagerInterface {
 
     @Override
     public boolean dueAmountValidation(UserEmiDetails userEmiDetails) {
-        double enteredAmount = userEmiDetails.getEmi_amount();
+        int enteredAmount = userEmiDetails.getEmi_amount();
+        System.out.println("hello due");
         List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
-
+        System.out.println(list);
+        System.out.println("retrieved list");
         LocalDate presentDate = LocalDate.now();
         presentDate = presentDate.plusMonths(1);
 
         int totalDueAmount = 0;
         int emi = list.get(0).getEmi();
+        System.out.println(emi);
 
         for(LoanPaymentSchedule val : list){
             LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if(due.compareTo(presentDate) < 0){
                 totalDueAmount += val.getDueAmount();
             }
+
         }
+        System.out.println("due amount calculated");
 
         if(enteredAmount == totalDueAmount || enteredAmount == emi){
             return true;
         }
-        else{
             return false;
-        }
+
     }
 
 
 
     @Override
-    public void acceptPayment(UserEmiDetails userEmiDetails) throws InvalidDueAmount {
-        if(dueAmountValidation(userEmiDetails)) {
+    public void acceptPayment(UserEmiDetails userEmiDetails) {
+        System.out.println("helloaccept");
+        boolean check = dueAmountValidation(userEmiDetails);
+        if(check){
             //make entry in loan payment with status = success
+            System.out.println("validation success");
             String utr = StringRandom.get();
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
@@ -128,6 +134,7 @@ public class Manager implements ManagerInterface {
             List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
 
             if(userEmiDetails.getEmi_amount() == list.get(0).getEmi()){
+                System.out.println("hello");
                 for(LoanPaymentSchedule val : list){
                     if(val.getDueAmount() !=0){
                         val.setDueAmount(0);
@@ -152,9 +159,9 @@ public class Manager implements ManagerInterface {
                     }
                 }
             }
-
+            System.out.println("update");
             loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
-
+            System.out.println("update after");
         }
         else {
             //make entry in loan payment with status = failed
@@ -169,9 +176,9 @@ public class Manager implements ManagerInterface {
                     new Date(),
                     new Date());
             loanPaymentDao.saveLoanPayment(loanPayment);
-
-
-            throw new InvalidDueAmount("Amount Invalid");
+            //System.out.println(userEmiDetails.getEmi_amount());
+            //System.out.println("wrong emi");
+//            throw new InvalidDueAmount("Amount Invalid");
 
         }
     }

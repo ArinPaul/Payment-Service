@@ -66,13 +66,13 @@ public class Controller implements ControllerService {
     @PostMapping(path = "/emiPayment", consumes = "application/json")
     public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //AuthToken Validation API Call
-        boolean valid = false;
-        try{
-            valid = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getAuth_token(),"Auth Token Verification")); //Auth Service API EndPoint
-        }catch(Exception e){
-            System.out.println("Auth service API call failed");
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        boolean valid = true;
+//        try{
+//            valid = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getAuth_token(),"Auth Token Verification")); //Auth Service API EndPoint
+//        }catch(Exception e){
+//            System.out.println("Auth service API call failed");
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 
         if(!valid){
             System.out.println("Authentication Failed");
@@ -80,13 +80,13 @@ public class Controller implements ControllerService {
         }
 
         //LOS API call to check if loan is open
-        boolean res = false;
-        try{
-            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
-        }catch(Exception e){
-            System.out.println("LOS Service API Call failed for validation");
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        boolean res = true;
+//        try{
+//            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
+//        }catch(Exception e){
+//            System.out.println("LOS Service API Call failed for validation");
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 
         if(!res){
             caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"","Loan Application Closed");
@@ -99,8 +99,8 @@ public class Controller implements ControllerService {
             manager.acceptPayment(emiDetails);
         }catch (Exception InvalidDueAmount) {
             System.out.println("Payment Acceptance Failed");
-            caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",InvalidDueAmount.getMessage());
-            return new ResponseEntity<String>("Invalid Due Amount. Please enter a valid amount.", HttpStatus.BAD_REQUEST);
+            //caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",InvalidDueAmount.getMessage());
+            return new ResponseEntity<String>(InvalidDueAmount.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
 

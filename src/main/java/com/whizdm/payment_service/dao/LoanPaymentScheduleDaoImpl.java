@@ -36,9 +36,9 @@ public class LoanPaymentScheduleDaoImpl implements LoanPaymentScheduleDao{
 
         Session currentSession = entityManager.unwrap(Session.class);
         for(LoanPaymentSchedule val : theLoanPaymentSchedule){
-            Query theQuery = currentSession.createQuery("update loan_payment_schedule set payment_utr_id := paymentUtrId "+
-                   "payment_status := paymentStatus " + "due_amount := dueAmount " + "date_modified :=  dateModified "+
-                    "where id := Id");
+            Query theQuery = currentSession.createQuery("update LoanPaymentSchedule set payment_utr_id = :paymentUtrId "+
+                   "payment_status = :paymentStatus " + "due_amount = :dueAmount " + "date_modified = :dateModified "+
+                    "where id = :Id");
             theQuery.setParameter("paymentUtrId", val.getPaymentUtrId());
             theQuery.setParameter("paymentStatus", val.getStatus());
             theQuery.setParameter("dueAmount", val.getDueAmount());
@@ -54,7 +54,8 @@ public class LoanPaymentScheduleDaoImpl implements LoanPaymentScheduleDao{
     public List<LoanPaymentSchedule> retrieveLoanPayment(String theLoanApplicationId) {
 
         Session currentSession = entityManager.unwrap(Session.class);
-        Query theQuery = currentSession.createQuery("from loan_payment_schedule where loan_application_id =: Id");
+        System.out.println("in dao");
+        Query theQuery = currentSession.createQuery("from LoanPaymentSchedule where loan_application_id = :Id");
         theQuery.setParameter("Id",theLoanApplicationId);
         List<LoanPaymentSchedule> list = theQuery.getResultList();
         return list;
