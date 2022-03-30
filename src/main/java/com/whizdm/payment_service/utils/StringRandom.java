@@ -1,4 +1,4 @@
-package com.whizdm.payment_service.utility;
+package com.whizdm.payment_service.utils;
 
 public class StringRandom {
     public static String get(){
