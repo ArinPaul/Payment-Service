@@ -1,7 +1,5 @@
 package com.whizdm.payment_service.controller;
 
-import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
-
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
 import com.whizdm.payment_service.manager.Manager;
@@ -9,9 +7,10 @@ import com.whizdm.payment_service.utils.APICaller.APICaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -31,10 +30,9 @@ public class Controller implements ControllerService {
     @PostMapping("/loanDisbursal")
     public ResponseEntity<String> loanSaveSchedule(@RequestBody PaymentScheduleLos paymentSchedule) {
         //Save Repayment Schedule
-        System.out.println("Hello");
         try {
             manager.saveRepaymentSchedule(paymentSchedule);
-            System.out.println("saved");
+            System.out.println("Saved");
         }catch (Exception e){
             System.out.println("Saving Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
