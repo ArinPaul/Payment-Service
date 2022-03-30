@@ -1,7 +1,7 @@
 package com.whizdm.payment_service.customexceptions;
 
 public class InvalidDueAmount extends Exception{
-    InvalidDueAmount(String message){
+    public InvalidDueAmount(String message){
         super(message);
     }
 }

@@ -1,5 +1,6 @@
 package com.whizdm.payment_service.manager;
 
+import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
@@ -107,7 +108,7 @@ public class Manager implements ManagerInterface {
 
 
     @Override
-    public void acceptPayment(UserEmiDetails userEmiDetails) {
+    public void acceptPayment(UserEmiDetails userEmiDetails) throws InvalidDueAmount {
         if(dueAmountValidation(userEmiDetails)) {
             //make entry in loan payment with status = success
             String utr = StringRandom.get();
@@ -173,7 +174,7 @@ public class Manager implements ManagerInterface {
             loanPaymentDao.saveLoanPayment(loanPayment);
 
 
-//            throw new InvalidDueAmount("Amount Invalid");
+            throw new InvalidDueAmount("Amount Invalid");
 
         }
     }
