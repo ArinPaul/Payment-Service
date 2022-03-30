@@ -7,6 +7,10 @@ import com.whizdm.payment_service.utils.APICaller.APICaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +37,7 @@ public class Controller implements ControllerService {
         try {
             manager.saveRepaymentSchedule(paymentSchedule);
             System.out.println("Saved");
+
         }catch (Exception e){
             System.out.println("Saving Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,17 +54,11 @@ public class Controller implements ControllerService {
         //Communication service API call to notify user
 
         try{
-            caller.postAPICall("",paymentSchedule.getUser_id(),"Loan amount disbursed successfully"); //Communication Service API EndPoint
+            caller.postAPICallComm("","SD",paymentSchedule.getUser_id(),paymentSchedule.getLoan_id(),paymentSchedule.getBank_account_no(),Double.toString(paymentSchedule.getPrincipal_amount())); //Communication Service API EndPoint
         }catch(Exception e){
             System.out.println("Communication API for Loan Disbursal Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-//        try{
-//            caller.APICall(""); //Communication Service API EndPoint
-//        }catch(Exception e){
-//            System.out.println("Communication API for Loan Disbursal Failed");
-//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
 
         return new ResponseEntity<String>("Process Completed Successfully",HttpStatus.OK);
     }
@@ -67,37 +66,42 @@ public class Controller implements ControllerService {
 
 
     @PostMapping(path = "/emiPayment", consumes = "application/json")
-    public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails){
+    public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //AuthToken Validation API Call
+        boolean valid = false;
         try{
-            var res = caller.postAPICall("",emiDetails.getAuth_token(),""); //Auth Service API EndPoint
+            valid = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getAuth_token(),"Auth Token Verification")); //Auth Service API EndPoint
         }catch(Exception e){
             System.out.println("Auth service API call failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        if(!valid){
+            System.out.println("Authentication Failed");
+            return new ResponseEntity<String>("Authentication Failed",HttpStatus.FORBIDDEN);
+        }
+
         //LOS API call to check if loan is open
+        boolean res = false;
         try{
-            var res = caller.postAPICall("",emiDetails.getLoan_id(),"Loan Verification for payment"); //LOS Service API EndPoint
+            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
         }catch(Exception e){
             System.out.println("LOS Service API Call failed for validation");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-//        //Check database to verify due amount
-//        boolean validAmount = false;
-//        try {
-//            validAmount = manager.dueAmountValidation(emiDetails);
-//        }catch (Exception e){
-//            System.out.println("Due amount validation failed");
-//            return new ResponseEntity<String>("Couldn't verify the due amount.",HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        if(!res){
+            caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"","Loan Application Closed");
+            System.out.println("Loan Application Closed");
+            return new ResponseEntity<String>("Loan Application Closed",HttpStatus.NOT_ACCEPTABLE);
+        }
 
         //Accept payment if amount is valid
         try{
             manager.acceptPayment(emiDetails);
         }catch (Exception InvalidDueAmount) {
             System.out.println("Payment Acceptance Failed");
+            caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",InvalidDueAmount.getMessage());
             return new ResponseEntity<String>("Invalid Due Amount. Please enter a valid amount.", HttpStatus.BAD_REQUEST);
         }
 
@@ -105,14 +109,14 @@ public class Controller implements ControllerService {
 
         //Communication service API call to notify user
         try{
-            caller.postAPICall("",emiDetails.getUser_id()," EMI Payment Processed Successfully"); //Communication Service API EndPoint
+            caller.postAPICallComm("","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"","EMI Payment Processed Successfully");//Communication Service API EndPoint
         }catch(Exception e){
             System.out.println("Communication service API call failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if(manager.check(emiDetails.getLoan_id())){
-            //Call LOS to close application
+            caller.postAPICall("",emiDetails.getLoan_id(),"CloseApplication");
         }
 
 
@@ -122,20 +126,6 @@ public class Controller implements ControllerService {
 
 
 
-
-//    @GetMapping("/LoanDisbursal")
-//    public String demo(){
-//
-//        var url = "https://covid19.mathdro.id/api";
-//        String res = "";
-//        try{
-//           res = caller.APICall(url);
-//        }catch(Exception e){
-//            System.out.println(e.getMessage());
-//        }finally {
-//            return res;
-//        }
-//    }
 
 
 
