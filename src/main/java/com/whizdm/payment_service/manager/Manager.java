@@ -5,7 +5,7 @@ import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
 import com.whizdm.payment_service.entity.*;
-import com.whizdm.payment_service.utility.StringRandom;
+import com.whizdm.payment_service.utils.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

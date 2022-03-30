@@ -49,8 +49,8 @@ public class Controller implements ControllerService {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        //Communication service API call to notify user
 
+        //Communication service API call to notify user
         try{
             caller.postAPICallComm("","SD",paymentSchedule.getUser_id(),paymentSchedule.getLoan_id(),paymentSchedule.getBank_account_no(),Double.toString(paymentSchedule.getPrincipal_amount())); //Communication Service API EndPoint
         }catch(Exception e){
