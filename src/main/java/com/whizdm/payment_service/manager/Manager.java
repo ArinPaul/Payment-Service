@@ -172,6 +172,7 @@ public class Manager implements ManagerInterface {
                     new Date(),
                     new Date());
             loanPaymentDao.saveLoanPayment(loanPayment);
+
 //            throw new InvalidDueAmount("Amount Invalid");
         }
     }
