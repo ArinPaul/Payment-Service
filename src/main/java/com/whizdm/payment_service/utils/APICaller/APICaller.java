@@ -24,7 +24,6 @@ public class APICaller implements APICallerService{
       return response.body();
   }
   public String postAPICall(String url,String id, String message) throws IOException,InterruptedException{
-
       var objectMapper = new ObjectMapper();
       var values = new HashMap<String,String>(){{
           put(id,message);
