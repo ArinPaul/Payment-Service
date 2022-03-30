@@ -1,9 +1,7 @@
 package com.whizdm.payment_service.controller;
-<<<<<<< HEAD
-import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
-=======
 
->>>>>>> 74dd1124b052c335f26a28316faf49558b6a1d4f
+import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
+
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
 import com.whizdm.payment_service.manager.Manager;
