@@ -1,6 +1,5 @@
 package com.whizdm.payment_service.manager;
 
-import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
@@ -97,7 +96,7 @@ public class Manager implements ManagerInterface {
             }
         }
 
-        if(userEmiDetails.getEmi_amount() == totalDueAmount || userEmiDetails.getEmi_amount() == emi){
+        if(enteredAmount == totalDueAmount || enteredAmount == emi){
             return true;
         }
         else{
@@ -144,7 +143,7 @@ public class Manager implements ManagerInterface {
                 presentDate = presentDate.plusMonths(1);
                 for(LoanPaymentSchedule val : list){
                     LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    if(due.compareTo(presentDate) < 0){
+                    if(due.compareTo(presentDate) < 0 && val.getDueAmount() != 0){
                         val.setDueAmount(0);
                         val.setPaymentUtrId(utr);
                         val.setDateModified(new Date());
@@ -173,7 +172,9 @@ public class Manager implements ManagerInterface {
                     new Date());
             loanPaymentDao.saveLoanPayment(loanPayment);
 
+
 //            throw new InvalidDueAmount("Amount Invalid");
+
         }
     }
 

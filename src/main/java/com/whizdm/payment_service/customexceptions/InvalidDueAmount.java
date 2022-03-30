@@ -5,4 +5,3 @@ public class InvalidDueAmount extends Exception{
         super(message);
     }
 }
-

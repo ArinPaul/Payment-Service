@@ -96,12 +96,12 @@ public class Controller implements ControllerService {
 //        }
 
         //Accept payment if amount is valid
-            try{
-                manager.acceptPayment(emiDetails);
-            }catch (Exception InvalidDueAmount) {
-                System.out.println("Payment Acceptance Failed");
-                return new ResponseEntity<String>("Invalid Due Amount. Please enter a valid amount.", HttpStatus.BAD_REQUEST);
-            }
+        try{
+            manager.acceptPayment(emiDetails);
+        }catch (Exception InvalidDueAmount) {
+            System.out.println("Payment Acceptance Failed");
+            return new ResponseEntity<String>("Invalid Due Amount. Please enter a valid amount.", HttpStatus.BAD_REQUEST);
+        }
 
 
 
@@ -143,3 +143,4 @@ public class Controller implements ControllerService {
 
 
 }
+
