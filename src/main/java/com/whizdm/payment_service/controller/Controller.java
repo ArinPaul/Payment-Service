@@ -1,16 +1,17 @@
 package com.whizdm.payment_service.controller;
+<<<<<<< HEAD
 import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
+=======
+
+>>>>>>> 74dd1124b052c335f26a28316faf49558b6a1d4f
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
 import com.whizdm.payment_service.manager.Manager;
 import com.whizdm.payment_service.utils.APICaller.APICaller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -30,10 +31,12 @@ public class Controller implements ControllerService {
     }
 
     @PostMapping("/loanDisbursal")
-    public ResponseEntity<String> loanSaveSchedule(PaymentScheduleLos paymentSchedule) {
+    public ResponseEntity<String> loanSaveSchedule(@RequestBody PaymentScheduleLos paymentSchedule) {
         //Save Repayment Schedule
+        System.out.println("Hello");
         try {
             manager.saveRepaymentSchedule(paymentSchedule);
+            System.out.println("saved");
         }catch (Exception e){
             System.out.println("Saving Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -48,12 +51,20 @@ public class Controller implements ControllerService {
         }
 
         //Communication service API call to notify user
+
         try{
             caller.postAPICall("",paymentSchedule.getUser_id(),"Loan amount disbursed successfully"); //Communication Service API EndPoint
         }catch(Exception e){
             System.out.println("Communication API for Loan Disbursal Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+//        try{
+//            caller.APICall(""); //Communication Service API EndPoint
+//        }catch(Exception e){
+//            System.out.println("Communication API for Loan Disbursal Failed");
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+
         return new ResponseEntity<String>("Process Completed Successfully",HttpStatus.OK);
     }
 
@@ -116,13 +127,13 @@ public class Controller implements ControllerService {
 
 
 
-//    @GetMapping("/payments/api/LoanDisbursal")
+//    @GetMapping("/LoanDisbursal")
 //    public String demo(){
 //
 //        var url = "https://covid19.mathdro.id/api";
 //        String res = "";
 //        try{
-//           res = call.APICall(url);
+//           res = caller.APICall(url);
 //        }catch(Exception e){
 //            System.out.println(e.getMessage());
 //        }finally {
