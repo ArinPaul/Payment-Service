@@ -1,5 +1,6 @@
 package com.whizdm.payment_service.manager;
 
+import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
@@ -169,6 +170,7 @@ public class Manager implements ManagerInterface {
                     new Date(),
                     new Date());
             loanPaymentDao.saveLoanPayment(loanPayment);
+//            throw new InvalidDueAmount("Amount Invalid");
         }
     }
 
