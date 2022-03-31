@@ -1,5 +1,6 @@
 package com.whizdm.payment_service.controller;
 
+import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
 import com.whizdm.payment_service.manager.Manager;
@@ -28,6 +29,8 @@ public class Controller implements ControllerService {
 
     @PostMapping("/loanDisbursal")
     public ResponseEntity<String> loanSaveSchedule(@RequestBody PaymentScheduleLos paymentSchedule) {
+
+
         //Save Repayment Schedule
         try {
             manager.saveRepaymentSchedule(paymentSchedule);
@@ -38,6 +41,8 @@ public class Controller implements ControllerService {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+
+
         //Disburse Loan
         try {
             manager.disbursal(paymentSchedule);
@@ -46,10 +51,12 @@ public class Controller implements ControllerService {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        //Communication service API call to notify user
 
+
+        //Communication service API call to notify user
         try{
-            caller.postAPICallComm("","SD",paymentSchedule.getUser_id(),paymentSchedule.getLoan_id(),paymentSchedule.getBank_account_no(),Double.toString(paymentSchedule.getPrincipal_amount())); //Communication Service API EndPoint
+            caller.postAPICallComm("http://3.110.107.24:8080/sendSMS","SD",paymentSchedule.getUser_id(),paymentSchedule.getLoan_id(),paymentSchedule.getBank_account_no(),Double.toString(paymentSchedule.getDisbursal_amount()),"Loan Amount has been disbursed");
+            caller.postAPICallComm("http://3.110.107.24:8080/sendEmail","SD",paymentSchedule.getUser_id(),paymentSchedule.getLoan_id(),paymentSchedule.getBank_account_no(),Double.toString(paymentSchedule.getDisbursal_amount()),"Loan Amount has been disbursed");//Communication Service API EndPoint
         }catch(Exception e){
             System.out.println("Communication API for Loan Disbursal Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,72 +70,83 @@ public class Controller implements ControllerService {
     @PostMapping(path = "/emiPayment", consumes = "application/json")
     public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //AuthToken Validation API Call
-        boolean valid = true;
+        int result;
         try{
-            valid = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getAuth_token(),"Auth Token Verification")); //Auth Service API EndPoint
+            var valid = caller.postAPICallAuth("http://13.233.162.61:8080/validateToken","1st","90329838-0832-4686-9d7e-948e7bffee8a"); //Auth Service API EndPoint
+            result = (int)valid.get("Status");
+            System.out.println(result);
         }catch(Exception e){
             System.out.println("Auth service API call failed");
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if(!valid){
+        if(result!=200){
             System.out.println("Authentication Failed");
             return new ResponseEntity<String>("Authentication Failed",HttpStatus.FORBIDDEN);
         }
 
-        //LOS API call to check if loan is open
-        boolean res = true;
-        try{
-            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
-        }catch(Exception e){
-            System.out.println("LOS Service API Call failed for validation");
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        System.out.println("Authentication Successs");
 
+
+        //LOS API call to check if loan is open
+//        boolean res = true;
+//        try{
+//            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
+//        }catch(Exception e){
+//            System.out.println("LOS Service API Call failed for validation");
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+
+    var res = true;
         if(!res){
-            caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"","Loan Application Closed");
+           var ressms=  caller.postAPICallComm("http://3.110.107.24:8080/sendSMS","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",null,"Loan Application Is Already Closed");
+            var resemail=  caller.postAPICallComm("http://3.110.107.24:8080/sendEMAIL","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",null,"Loan Application Is Already Closed");
+
             System.out.println("Loan Application Closed");
+            System.out.println(ressms);
             return new ResponseEntity<String>("Loan Application Closed",HttpStatus.NOT_ACCEPTABLE);
         }
 
-        //Accept payment if amount is valid
+//        Accept payment if amount is valid
         try{
             manager.acceptPayment(emiDetails);
-        }catch (Exception InvalidDueAmount) {
+        }catch (InvalidDueAmount e1) {
             System.out.println("Payment Acceptance Failed");
-            //caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",InvalidDueAmount.getMessage());
-            return new ResponseEntity<String>(InvalidDueAmount.getMessage(), HttpStatus.BAD_REQUEST);
+            caller.postAPICallComm("http://3.110.107.24:8080/sendSMS","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",Integer.toString(emiDetails.getEmi_amount()),"Invalid Amount Entered");
+            caller.postAPICallComm("http://3.110.107.24:8080/sendEmail","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",Integer.toString(emiDetails.getEmi_amount()),"Invalid Amount Entered");
+            return new ResponseEntity<String>(e1.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch (IOException e2){
+            System.out.println("IOException Encountered");
+            return new ResponseEntity<String>("Server error (IOException)", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
 
-        //Communication service API call to notify user
+
+
+//        Communication service API call to notify user
         try{
-            caller.postAPICallComm("","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"","EMI Payment Processed Successfully");//Communication Service API EndPoint
+            caller.postAPICallComm("http://3.110.107.24:8080/sendSMS","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",Integer.toString(emiDetails.getEmi_amount()),"EMI Payment Processed Successfully");//Communication Service API EndPoint
+            caller.postAPICallComm("http://3.110.107.24:8080/sendEmail","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",Integer.toString(emiDetails.getEmi_amount()),"EMI Payment Processed Successfully");
         }catch(Exception e){
             System.out.println("Communication service API call failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if(manager.check(emiDetails.getLoan_id())){
-            caller.postAPICall("",emiDetails.getLoan_id(),"CloseApplication");
-        }
-
+        //LOS API call to close loan application if 12th months emi paid
+//
+//        if(manager.check(emiDetails.getLoan_id())){
+//            caller.postAPICall("",emiDetails.getLoan_id(),"CloseApplication");
+//        }
+//
         return new ResponseEntity<String>("EMI Payment Successfully Completed",HttpStatus.OK);
-    }
+ }
 
     //Payment Receiving
     @GetMapping("/receivePayment")
-    public ResponseEntity<String> sendPayment(@RequestParam("amount") int amount, @RequestParam("method") String method){
-        var st = "";
-        try {
-            st = manager.disbursePayment(amount,method);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<String>(st,HttpStatus.OK);
-    }
+    public void sendPayment() {
+        System.out.println("Inside receive payment");
 
+    }
 }
 
