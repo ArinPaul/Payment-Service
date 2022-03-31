@@ -18,5 +18,7 @@ public interface ManagerInterface {
 
     public boolean check(String loanId);
 
-    public void disbursePayment(int emi_amount,String payment_mode);
+    public String disbursePayment(int emi_amount, String payment_mode);
+
+    String payment(UserEmiDetails emiDetails);
 }

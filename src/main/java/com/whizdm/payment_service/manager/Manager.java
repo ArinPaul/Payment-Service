@@ -106,15 +106,15 @@ public class Manager implements ManagerInterface {
             return true;
         }
         return false;
-
+    }
 
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
         boolean check = dueAmountValidation(userEmiDetails);
         if (check) {
+            String utr = payment(userEmiDetails);
             //make entry in loan payment with status = success
-            String utr = StringRandom.get();
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
                     userEmiDetails.getEmi_amount(),
@@ -158,10 +158,7 @@ public class Manager implements ManagerInterface {
             loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
 
         }
-        else {
-
-            System.out.println("update after");
-        } else {
+     else {
 
             //make entry in loan payment with status = failed
             LoanPayment loanPayment = new LoanPayment(
@@ -191,15 +188,13 @@ public class Manager implements ManagerInterface {
         return true;
     }
 
-
-
-
     @Override
-    public void disbursePayment(int amount, String method) {
+    public String disbursePayment(int amount, String method) {
         System.out.println("Payment of amount " + amount + "received through " + method);
+        return StringRandom.get();
     }
-
-    public ResponseEntity<String> payment(UserEmiDetails emiDetails) {
+    @Override
+    public String payment(UserEmiDetails emiDetails) {
         //Receive Payment
         String resp = "";
         try {
@@ -208,9 +203,9 @@ public class Manager implements ManagerInterface {
             resp = caller.getAPICall("localhost:8080/payments/api/receivePayment?amount=" + amount + "method=" + method);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<String>(resp, HttpStatus.INTERNAL_SERVER_ERROR);
+            return StringRandom.get();
         }
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return resp;
     }
 
 }
