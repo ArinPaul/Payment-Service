@@ -1,5 +1,6 @@
 package com.whizdm.payment_service.manager;
 
+import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
@@ -7,10 +8,9 @@ import com.whizdm.payment_service.entity.*;
 import com.whizdm.payment_service.utils.APICaller.APICaller;
 import com.whizdm.payment_service.utils.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -84,7 +84,7 @@ public class Manager implements ManagerInterface {
     }
 
     @Override
-    public boolean dueAmountValidation(UserEmiDetails userEmiDetails) {
+    public boolean dueAmountValidation(UserEmiDetails userEmiDetails) throws InvalidDueAmount {
         int enteredAmount = userEmiDetails.getEmi_amount();
         List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
 
@@ -105,15 +105,29 @@ public class Manager implements ManagerInterface {
         if (enteredAmount == totalDueAmount || enteredAmount == emi) {
             return true;
         }
-        return false;
+        else {
+            System.out.println("Invalid Amount, Payment Rejected");
+            throw new InvalidDueAmount("Invalid Due Amount Entered");
+        }
     }
 
 
     @Override
-    public void acceptPayment(UserEmiDetails userEmiDetails) {
+    public void acceptPayment(UserEmiDetails userEmiDetails) throws InvalidDueAmount, IOException {
         boolean check = dueAmountValidation(userEmiDetails);
+        String utr = "";
         if (check) {
-            String utr = payment(userEmiDetails);
+            try {
+                utr = payment(userEmiDetails);
+                System.out.println("Inside accept payment try block");
+            }catch (IOException e){
+                System.out.println("Inside accept payment catch block");
+                System.out.println(e.getMessage());
+                throw new IOException();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("After String utr");
             //make entry in loan payment with status = success
 
             LoanPayment loanPayment = new LoanPayment(
@@ -193,22 +207,31 @@ public class Manager implements ManagerInterface {
 
     @Override
     public String disbursePayment(int amount, String method) {
+        System.out.println("Inside disburse payment");
         System.out.println("Payment of amount " + amount + "received through " + method);
         return StringRandom.get();
     }
 
     @Override
-    public String payment(UserEmiDetails emiDetails) {
+    public String payment(UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //Receive Payment
-        String resp = "";
-        try {
-            var amount = emiDetails.getEmi_amount();
-            var method = emiDetails.getPayment_mode();
-            resp = caller.getAPICall("localhost:8080/payments/api/receivePayment?amount=" + amount + "method=" + method);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return StringRandom.get();
-        }
+        System.out.println("Inside Payment");
+        var amount = emiDetails.getEmi_amount();
+        var method = emiDetails.getPayment_mode();
+        System.out.println("Payment of amount " + amount + "received through " + method);
+        String resp = StringRandom.get();
+
+//        try {
+//            var amount = emiDetails.getEmi_amount();
+//            var method = emiDetails.getPayment_mode();
+//            resp = caller.getAPICall("10.70.4.182:8080/payments/api/receivePayment");
+//            System.out.println("Inside payment try " +resp);
+//        } catch (Exception e) {
+//            System.out.println("Inside payment catch");
+//            System.out.println(e.getMessage());
+//            throw new IOException("API Call failed");
+//        }
+        System.out.println("From payment "+ resp);
         return resp;
     }
 

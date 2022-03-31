@@ -1,5 +1,8 @@
 package com.whizdm.payment_service.utils.APICaller;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.whizdm.payment_service.entity.ComRequestBody;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,8 +12,14 @@ import java.util.HashMap;
 
 //Singleton Class
 public class APICaller implements APICallerService{
+    public RestTemplate restTemplate = new RestTemplate();
   private static APICaller call = null;
-  private APICaller(){}
+
+
+  private ComRequestBody comRequestBody;
+  public APICaller(){
+
+  }
     public static APICaller getInstance(){
       if (call == null) return new APICaller();
       return call;
@@ -21,48 +30,41 @@ public class APICaller implements APICallerService{
       var response = client.send(request, HttpResponse.BodyHandlers.ofString());
       return response.body();
   }
-  public String postAPICall(String url,String id, String message) throws IOException,InterruptedException{
+  public String postAPICallLos(String url,String id, String message) throws IOException,InterruptedException{
 
-      var objectMapper = new ObjectMapper();
+      RestTemplate restTemplate = new RestTemplate();
       var values = new HashMap<String,String>(){{
           put(id,message);
       }};
-      String requestBody = objectMapper.writeValueAsString(values);
-      var client = HttpClient.newBuilder().build();
-      var request = HttpRequest.newBuilder()
-              .uri(URI.create(url))
-              .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-              .build();
-      var response = client.send(request,
-              HttpResponse.BodyHandlers.ofString());
-      return response.body();
+
+      return restTemplate.postForObject(url,values,String.class);
 
   }
-    public String postAPICallComm(String url,String req_type,String user_id, String loan_id,String bank_acc,String body) throws IOException,InterruptedException{
+    public String postAPICallComm(String url,String req_type,String user_id, String loan_id,String bank_acc,String amount ,String body) throws IOException,InterruptedException{
 
-        var objectMapper = new ObjectMapper();
-        var details = new HashMap<String,String>(){{
+      HashMap<String,String> details = new HashMap<String,String>(){{
             put("loanId",loan_id);
             put("reason",body);
             put("userId",user_id);
             put("bankAccount",bank_acc);
+            put("amount",amount);
         }};
-        var requestDetails = new HashMap<String,String>(){{
-            put("requestType",req_type);
+
+        ComRequestBody comRequestBody = new ComRequestBody();
+        comRequestBody.setRequestType(req_type);
+        comRequestBody.setDetails(details);
+
+        return restTemplate.postForObject(url,comRequestBody,String.class);
+
+    }
+    public HashMap postAPICallAuth(String url, String id, String message) throws IOException,InterruptedException{
+
+        var values = new HashMap<String,String>(){{
+            put("auth_token",message);
+            put("device_id",id);
         }};
-        var values = new HashMap<String,HashMap<String,String>>(){{
-            put("requestType",requestDetails);
-            put("details",details);
-        }};
-        String requestBody = objectMapper.writeValueAsString(values);
-        var client = HttpClient.newBuilder().build();
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-        var response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        return response.body();
+
+        return restTemplate.postForObject(url,values,HashMap.class);
 
     }
 }
