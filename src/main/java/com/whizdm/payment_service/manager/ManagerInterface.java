@@ -17,4 +17,6 @@ public interface ManagerInterface {
     public void acceptPayment(UserEmiDetails userEmiDetails) throws InvalidDueAmount;
 
     public boolean check(String loanId);
+
+    public void disbursePayment(int emi_amount,String payment_mode);
 }
