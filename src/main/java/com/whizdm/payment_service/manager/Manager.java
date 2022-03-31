@@ -93,21 +93,24 @@ public class Manager implements ManagerInterface {
 
         int totalDueAmount = 0;
         int emi = list.get(0).getEmi();
-
+        LocalDate due = LocalDate.now();
         for (LoanPaymentSchedule val : list) {
-            LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if (due.compareTo(presentDate) < 0) {
                 totalDueAmount += val.getDueAmount();
             }
 
         }
 
-        if (enteredAmount == totalDueAmount || enteredAmount == emi) {
+        if (enteredAmount == totalDueAmount) {
+            return true;
+        }
+        else if(enteredAmount == emi && due.compareTo(presentDate) < 0){
             return true;
         }
         else {
             System.out.println("Invalid Amount, Payment Rejected");
-            throw new InvalidDueAmount("Invalid Due Amount Entered");
+            return false;
         }
     }
 
@@ -188,7 +191,7 @@ public class Manager implements ManagerInterface {
                     new Date(),
                     new Date());
             loanPaymentDao.saveLoanPayment(loanPayment);
-//          throw new InvalidDueAmount("Amount Invalid");
+            throw new InvalidDueAmount("Invalid Due Amount Entered");
 
         }
     }
