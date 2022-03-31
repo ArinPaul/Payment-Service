@@ -219,7 +219,7 @@ public class Manager implements ManagerInterface {
         System.out.println("Inside Payment");
         var amount = emiDetails.getEmi_amount();
         var method = emiDetails.getPayment_mode();
-        System.out.println("Payment of amount " + amount + "received through " + method);
+        System.out.println("Payment of amount " + amount + " received through " + method);
         String resp = StringRandom.get();
 
 //        try {
