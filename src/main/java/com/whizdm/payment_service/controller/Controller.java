@@ -100,17 +100,6 @@ public class Controller implements ControllerService {
             return new ResponseEntity<String>(InvalidDueAmount.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        //Receive Payment
-        String resp = "";
-        try{
-            var amount = emiDetails.getEmi_amount();
-            var method = emiDetails.getPayment_mode();
-            resp = caller.getAPICall("localhost:8080/payments/api/receivePayment?amount="+amount+"method="+method);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return new ResponseEntity<String>(resp,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
 
 
         //Communication service API call to notify user
@@ -132,7 +121,7 @@ public class Controller implements ControllerService {
     @GetMapping("/receivePayment")
     public ResponseEntity<String> sendPayment(@RequestParam("amount") int amount, @RequestParam("method") String method){
         try {
-            System.out.println("Amount "+amount+"received via "+ method);
+            manager.disbursePayment(amount,method);
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
