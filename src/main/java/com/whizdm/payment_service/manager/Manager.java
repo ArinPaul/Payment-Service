@@ -106,15 +106,15 @@ public class Manager implements ManagerInterface {
             return true;
         }
         return false;
-
-
+    }
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
         boolean check = dueAmountValidation(userEmiDetails);
         if (check) {
             //make entry in loan payment with status = success
-            String utr = StringRandom.get();
+            String utr = payment(userEmiDetails);
+
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
                     userEmiDetails.getEmi_amount(),
@@ -158,10 +158,8 @@ public class Manager implements ManagerInterface {
             loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
 
         }
-        else {
 
-            System.out.println("update after");
-        } else {
+        else {
 
             //make entry in loan payment with status = failed
             LoanPayment loanPayment = new LoanPayment(
@@ -192,13 +190,12 @@ public class Manager implements ManagerInterface {
     }
 
 
-
-
     @Override
-    public void disbursePayment(int amount, String method) {
+    public String disbursePayment(int amount, String method) {
         System.out.println("Payment of amount " + amount + "received through " + method);
     }
 
+    @Override
     public ResponseEntity<String> payment(UserEmiDetails emiDetails) {
         //Receive Payment
         String resp = "";

@@ -64,12 +64,12 @@ public class Controller implements ControllerService {
     public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //AuthToken Validation API Call
         boolean valid = true;
-//        try{
-//            valid = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getAuth_token(),"Auth Token Verification")); //Auth Service API EndPoint
-//        }catch(Exception e){
-//            System.out.println("Auth service API call failed");
-//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        try{
+            valid = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getAuth_token(),"Auth Token Verification")); //Auth Service API EndPoint
+        }catch(Exception e){
+            System.out.println("Auth service API call failed");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if(!valid){
             System.out.println("Authentication Failed");
@@ -78,12 +78,12 @@ public class Controller implements ControllerService {
 
         //LOS API call to check if loan is open
         boolean res = true;
-//        try{
-//            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
-//        }catch(Exception e){
-//            System.out.println("LOS Service API Call failed for validation");
-//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        try{
+            res = Boolean.parseBoolean(caller.postAPICall("",emiDetails.getLoan_id(),"LoanVerification")); //LOS Service API EndPoint
+        }catch(Exception e){
+            System.out.println("LOS Service API Call failed for validation");
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if(!res){
             caller.postAPICallComm("","MEMIF",emiDetails.getUser_id(),emiDetails.getLoan_id(),"","Loan Application Closed");

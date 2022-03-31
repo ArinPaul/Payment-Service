@@ -3,6 +3,7 @@ package com.whizdm.payment_service.manager;
 import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
+import org.springframework.http.ResponseEntity;
 
 public interface ManagerInterface {
 
@@ -18,5 +19,7 @@ public interface ManagerInterface {
 
     public boolean check(String loanId);
 
-    public void disbursePayment(int emi_amount,String payment_mode);
+    public String disbursePayment(int emi_amount, String payment_mode);
+
+    ResponseEntity<String> payment(UserEmiDetails emiDetails);
 }
