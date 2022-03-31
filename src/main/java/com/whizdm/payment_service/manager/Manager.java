@@ -193,5 +193,12 @@ public class Manager implements ManagerInterface {
         }
         return true;
     }
+
+    @Override
+    public void disbursePayment(int emi_amount, String payment_mode) {
+
+    }
+
+
 }
 
