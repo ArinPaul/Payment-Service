@@ -4,8 +4,11 @@ import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
 import com.whizdm.payment_service.entity.*;
+import com.whizdm.payment_service.utils.APICaller.APICaller;
 import com.whizdm.payment_service.utils.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +22,7 @@ public class Manager implements ManagerInterface {
     private LoanDisbursalDao loanDisbursalDao;
     private LoanPaymentDao loanPaymentDao;
     private LoanPaymentScheduleDao loanPaymentScheduleDao;
+    private APICaller caller;
 
     Random random = new Random();
 
@@ -27,6 +31,7 @@ public class Manager implements ManagerInterface {
         this.loanDisbursalDao = loanDisbursalDao;
         this.loanPaymentDao = loanPaymentDao;
         this.loanPaymentScheduleDao = loanPaymentScheduleDao;
+        this.caller = APICaller.getInstance();
     }
 
     @Override
@@ -36,7 +41,7 @@ public class Manager implements ManagerInterface {
                 paymentScheduleLos.getLoan_id(),
                 paymentScheduleLos.getPartner_id(),
                 paymentScheduleLos.getBank_account_no(),
-                (int)paymentScheduleLos.getDisbursal_amount(),
+                (int) paymentScheduleLos.getDisbursal_amount(),
                 new Date(),
                 StringRandom.get(),
                 new Date(),
@@ -46,7 +51,7 @@ public class Manager implements ManagerInterface {
 
     @Override
     public int amountRoundOff(double amount) {
-        int ans = (int)(amount*12) - (int)(Math.round(amount)*11);
+        int ans = (int) (amount * 12) - (int) (Math.round(amount) * 11);
         return ans;
     }
 
@@ -55,12 +60,12 @@ public class Manager implements ManagerInterface {
         //create loan_repayment_schedule
         List<LoanPaymentSchedule> list = new ArrayList<>();
         Date tmp = paymentScheduleLos.getDue_date();
-        for(int i=0;i<12;i++){
+        for (int i = 0; i < 12; i++) {
             LoanPaymentSchedule theLoanPaymentSchedule = new LoanPaymentSchedule(
                     paymentScheduleLos.getLoan_id(),
-                    (int)((i==11)?paymentScheduleLos.getLast_emi():paymentScheduleLos.getFirst_emi()),
+                    (int) ((i == 11) ? paymentScheduleLos.getLast_emi() : paymentScheduleLos.getFirst_emi()),
                     tmp,
-                    (int)((i==11)?paymentScheduleLos.getLast_emi():paymentScheduleLos.getFirst_emi()),
+                    (int) ((i == 11) ? paymentScheduleLos.getLast_emi() : paymentScheduleLos.getFirst_emi()),
                     (float) paymentScheduleLos.getPrincipal_amount(),
                     paymentScheduleLos.getInterest_component(),
                     new Date(),
@@ -71,7 +76,7 @@ public class Manager implements ManagerInterface {
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(tmp);
-            calendar.add(calendar.MONTH,1);
+            calendar.add(calendar.MONTH, 1);
             tmp = calendar.getTime();
         }
 
@@ -89,25 +94,25 @@ public class Manager implements ManagerInterface {
         int totalDueAmount = 0;
         int emi = list.get(0).getEmi();
 
-        for(LoanPaymentSchedule val : list){
+        for (LoanPaymentSchedule val : list) {
             LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            if(due.compareTo(presentDate) < 0){
+            if (due.compareTo(presentDate) < 0) {
                 totalDueAmount += val.getDueAmount();
             }
 
         }
 
-        if(enteredAmount == totalDueAmount || enteredAmount == emi){
+        if (enteredAmount == totalDueAmount || enteredAmount == emi) {
             return true;
         }
         return false;
-    }
+
 
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
         boolean check = dueAmountValidation(userEmiDetails);
-        if(check){
+        if (check) {
             //make entry in loan payment with status = success
             String utr = StringRandom.get();
             LoanPayment loanPayment = new LoanPayment(
@@ -125,10 +130,10 @@ public class Manager implements ManagerInterface {
             //update loan_payment_schedule
             List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(userEmiDetails.getLoan_id());
 
-            if(userEmiDetails.getEmi_amount() == list.get(0).getEmi()){
+            if (userEmiDetails.getEmi_amount() == list.get(0).getEmi()) {
                 System.out.println("hello");
-                for(LoanPaymentSchedule val : list){
-                    if(val.getDueAmount() !=0){
+                for (LoanPaymentSchedule val : list) {
+                    if (val.getDueAmount() != 0) {
                         val.setDueAmount(0);
                         val.setPaymentUtrId(utr);// utr
                         val.setStatus("Paid");
@@ -137,13 +142,12 @@ public class Manager implements ManagerInterface {
                     }
                 }
 
-            }
-            else{
+            } else {
                 LocalDate presentDate = LocalDate.now();
                 presentDate = presentDate.plusMonths(1);
-                for(LoanPaymentSchedule val : list){
+                for (LoanPaymentSchedule val : list) {
                     LocalDate due = val.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    if(due.compareTo(presentDate) < 0 && val.getDueAmount() != 0){
+                    if (due.compareTo(presentDate) < 0 && val.getDueAmount() != 0) {
                         val.setDueAmount(0);
                         val.setPaymentUtrId(utr);
                         val.setDateModified(new Date());
@@ -152,8 +156,13 @@ public class Manager implements ManagerInterface {
                 }
             }
             loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
+
         }
         else {
+
+            System.out.println("update after");
+        } else {
+
             //make entry in loan payment with status = failed
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
@@ -172,10 +181,10 @@ public class Manager implements ManagerInterface {
     }
 
     @Override
-    public boolean check(String loanId){
+    public boolean check(String loanId) {
         List<LoanPaymentSchedule> list = loanPaymentScheduleDao.retrieveLoanPayment(loanId);
-        for(LoanPaymentSchedule val : list){
-            if(val.getDueAmount() != 0){
+        for (LoanPaymentSchedule val : list) {
+            if (val.getDueAmount() != 0) {
                 return false;
             }
         }
@@ -183,5 +192,27 @@ public class Manager implements ManagerInterface {
     }
 
 
+
+
+    @Override
+    public void disbursePayment(int amount, String method) {
+        System.out.println("Payment of amount " + amount + "received through " + method);
+    }
+
+    public ResponseEntity<String> payment(UserEmiDetails emiDetails) {
+        //Receive Payment
+        String resp = "";
+        try {
+            var amount = emiDetails.getEmi_amount();
+            var method = emiDetails.getPayment_mode();
+            resp = caller.getAPICall("localhost:8080/payments/api/receivePayment?amount=" + amount + "method=" + method);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<String>(resp, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
 }
+
 
