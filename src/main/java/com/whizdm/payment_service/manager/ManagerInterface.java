@@ -3,6 +3,7 @@ package com.whizdm.payment_service.manager;
 import com.whizdm.payment_service.customexceptions.InvalidDueAmount;
 import com.whizdm.payment_service.entity.PaymentScheduleLos;
 import com.whizdm.payment_service.entity.UserEmiDetails;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 

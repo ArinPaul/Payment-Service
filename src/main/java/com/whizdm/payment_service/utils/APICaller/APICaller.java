@@ -1,5 +1,5 @@
 package com.whizdm.payment_service.utils.APICaller;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.whizdm.payment_service.entity.ComRequestBody;
 import org.springframework.web.client.RestTemplate;
 

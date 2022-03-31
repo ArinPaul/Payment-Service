@@ -8,8 +8,6 @@ import com.whizdm.payment_service.entity.*;
 import com.whizdm.payment_service.utils.APICaller.APICaller;
 import com.whizdm.payment_service.utils.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -116,12 +114,9 @@ public class Manager implements ManagerInterface {
 
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) throws InvalidDueAmount, IOException {
-//        boolean check = dueAmountValidation(userEmiDetails);
-        boolean check1 = true;
-        String utr  ="";
-        if (check1) {
-            System.out.println("Before String utr");
-
+        boolean check = dueAmountValidation(userEmiDetails);
+        String utr = "";
+        if (check) {
             try {
                 utr = payment(userEmiDetails);
                 System.out.println("Inside accept payment try block");
@@ -134,6 +129,7 @@ public class Manager implements ManagerInterface {
             }
             System.out.println("After String utr");
             //make entry in loan payment with status = success
+
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
                     userEmiDetails.getEmi_amount(),
@@ -177,6 +173,7 @@ public class Manager implements ManagerInterface {
             loanPaymentScheduleDao.updateLoanPaymentSchedule(list);
 
         }
+
      else {
 
             //make entry in loan payment with status = failed
@@ -207,12 +204,14 @@ public class Manager implements ManagerInterface {
         return true;
     }
 
+
     @Override
     public String disbursePayment(int amount, String method) {
         System.out.println("Inside disburse payment");
         System.out.println("Payment of amount " + amount + "received through " + method);
         return StringRandom.get();
     }
+
     @Override
     public String payment(UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //Receive Payment
