@@ -7,10 +7,7 @@ import com.whizdm.payment_service.utils.APICaller.APICaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -103,6 +100,17 @@ public class Controller implements ControllerService {
             return new ResponseEntity<String>(InvalidDueAmount.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
+        //Receive Payment
+        String resp = "";
+        try{
+            var amount = emiDetails.getEmi_amount();
+            var method = emiDetails.getPayment_mode();
+            resp = caller.getAPICall("localhost:8080/payments/api/receivePayment?amount="+amount+"method="+method);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<String>(resp,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
 
 
         //Communication service API call to notify user
@@ -118,6 +126,18 @@ public class Controller implements ControllerService {
         }
 
         return new ResponseEntity<String>("EMI Payment Successfully Completed",HttpStatus.OK);
+    }
+
+    //Payment Receiving
+    @GetMapping("/receivePayment")
+    public ResponseEntity<String> sendPayment(@RequestParam("amount") int amount, @RequestParam("method") String method){
+        try {
+            System.out.println("Amount "+amount+"received via "+ method);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<String>("Payment Received",HttpStatus.OK);
     }
 
 }
