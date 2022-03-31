@@ -108,12 +108,13 @@ public class Manager implements ManagerInterface {
         return false;
     }
 
+
     @Override
     public void acceptPayment(UserEmiDetails userEmiDetails) {
         boolean check = dueAmountValidation(userEmiDetails);
         if (check) {
-            //make entry in loan payment with status = success
             String utr = payment(userEmiDetails);
+            //make entry in loan payment with status = success
 
             LoanPayment loanPayment = new LoanPayment(
                     userEmiDetails.getLoan_id(),
@@ -159,7 +160,7 @@ public class Manager implements ManagerInterface {
 
         }
 
-        else {
+     else {
 
             //make entry in loan payment with status = failed
             LoanPayment loanPayment = new LoanPayment(
@@ -193,10 +194,11 @@ public class Manager implements ManagerInterface {
     @Override
     public String disbursePayment(int amount, String method) {
         System.out.println("Payment of amount " + amount + "received through " + method);
+        return StringRandom.get();
     }
 
     @Override
-    public ResponseEntity<String> payment(UserEmiDetails emiDetails) {
+    public String payment(UserEmiDetails emiDetails) {
         //Receive Payment
         String resp = "";
         try {
@@ -205,9 +207,9 @@ public class Manager implements ManagerInterface {
             resp = caller.getAPICall("localhost:8080/payments/api/receivePayment?amount=" + amount + "method=" + method);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<String>(resp, HttpStatus.INTERNAL_SERVER_ERROR);
+            return StringRandom.get();
         }
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return resp;
     }
 
 }

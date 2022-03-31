@@ -21,5 +21,5 @@ public interface ManagerInterface {
 
     public String disbursePayment(int emi_amount, String payment_mode);
 
-    ResponseEntity<String> payment(UserEmiDetails emiDetails);
+    String payment(UserEmiDetails emiDetails);
 }

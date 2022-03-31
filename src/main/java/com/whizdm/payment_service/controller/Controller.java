@@ -120,13 +120,14 @@ public class Controller implements ControllerService {
     //Payment Receiving
     @GetMapping("/receivePayment")
     public ResponseEntity<String> sendPayment(@RequestParam("amount") int amount, @RequestParam("method") String method){
+        var st = "";
         try {
-            manager.disbursePayment(amount,method);
+            st = manager.disbursePayment(amount,method);
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<String>("Payment Received",HttpStatus.OK);
+        return new ResponseEntity<String>(st,HttpStatus.OK);
     }
 
 }
