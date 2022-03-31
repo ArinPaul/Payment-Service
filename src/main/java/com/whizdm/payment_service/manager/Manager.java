@@ -5,6 +5,7 @@ import com.whizdm.payment_service.dao.LoanDisbursalDao;
 import com.whizdm.payment_service.dao.LoanPaymentDao;
 import com.whizdm.payment_service.dao.LoanPaymentScheduleDao;
 import com.whizdm.payment_service.entity.*;
+import com.whizdm.payment_service.external.PaymentGateway;
 import com.whizdm.payment_service.utils.APICaller.APICaller;
 import com.whizdm.payment_service.utils.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class Manager implements ManagerInterface {
     private LoanPaymentDao loanPaymentDao;
     private LoanPaymentScheduleDao loanPaymentScheduleDao;
     private APICaller caller;
+    private PaymentGateway gateway = new PaymentGateway();
 
     Random random = new Random();
 
@@ -37,6 +39,7 @@ public class Manager implements ManagerInterface {
     @Override
     public void disbursal(PaymentScheduleLos paymentScheduleLos) {
 
+        gateway.disburseLoan(paymentScheduleLos.getDisbursal_amount());
         LoanDisbursal loanDisbursal = new LoanDisbursal(
                 paymentScheduleLos.getLoan_id(),
                 paymentScheduleLos.getPartner_id(),
@@ -105,7 +108,7 @@ public class Manager implements ManagerInterface {
         if (enteredAmount == totalDueAmount) {
             return true;
         }
-        else if(enteredAmount == emi && due.compareTo(presentDate) < 0){
+        else if(enteredAmount == emi && totalDueAmount > 0){
             return true;
         }
         else {
@@ -221,7 +224,7 @@ public class Manager implements ManagerInterface {
         System.out.println("Inside Payment");
         var amount = emiDetails.getEmi_amount();
         var method = emiDetails.getPayment_mode();
-        System.out.println("Payment of amount " + amount + " received through " + method);
+        gateway.makePayment(amount,method);
         String resp = StringRandom.get();
 
 //        try {

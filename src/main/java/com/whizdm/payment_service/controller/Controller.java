@@ -34,7 +34,7 @@ public class Controller implements ControllerService {
         //Save Repayment Schedule
         try {
             manager.saveRepaymentSchedule(paymentSchedule);
-            System.out.println("Saved");
+            System.out.println("Payment Schedule Saved");
 
         }catch (Exception e){
             System.out.println("Saving Failed");
@@ -67,23 +67,25 @@ public class Controller implements ControllerService {
 
 
 
+
+
     @PostMapping(path = "/emiPayment", consumes = "application/json")
     public ResponseEntity<String> loanPayEmi(@RequestBody UserEmiDetails emiDetails) throws IOException, InterruptedException {
         //AuthToken Validation API Call
         int result;
-        try{
-            var valid = caller.postAPICallAuth("http://13.233.162.61:8080/validateToken","1st","90329838-0832-4686-9d7e-948e7bffee8a"); //Auth Service API EndPoint
-            result = (int)valid.get("Status");
-            System.out.println(result);
-        }catch(Exception e){
-            System.out.println("Auth service API call failed");
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if(result!=200){
-            System.out.println("Authentication Failed");
-            return new ResponseEntity<String>("Authentication Failed",HttpStatus.FORBIDDEN);
-        }
+//        try{
+//            var valid = caller.postAPICallAuth("http://13.233.162.61:8080/validateToken","1st","90329838-0832-4686-9d7e-948e7bffee8a"); //Auth Service API EndPoint
+//            result = (int)valid.get("Status");
+//            System.out.println(result);
+//        }catch(Exception e){
+//            System.out.println("Auth service API call failed");
+//            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        if(result!=200){
+//            System.out.println("Authentication Failed");
+//            return new ResponseEntity<String>("Authentication Failed",HttpStatus.FORBIDDEN);
+//        }
 
         System.out.println("Authentication Successs");
 
