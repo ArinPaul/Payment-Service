@@ -59,7 +59,7 @@ public class Controller implements ControllerService {
             caller.postAPICallComm("http://3.110.107.24:8080/sendEmail","SD",paymentSchedule.getUser_id(),paymentSchedule.getLoan_id(),paymentSchedule.getBank_account_no(),Double.toString(paymentSchedule.getDisbursal_amount()),"Loan Amount has been disbursed");//Communication Service API EndPoint
         }catch(Exception e){
             System.out.println("Communication API for Loan Disbursal Failed");
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<String>("Process Completed Successfully",HttpStatus.OK);
@@ -108,6 +108,8 @@ public class Controller implements ControllerService {
         }
 
 //        Accept payment if amount is valid
+
+
         try{
             manager.acceptPayment(emiDetails);
         }catch (InvalidDueAmount e1) {
@@ -129,8 +131,8 @@ public class Controller implements ControllerService {
             caller.postAPICallComm("http://3.110.107.24:8080/sendSMS","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",Integer.toString(emiDetails.getEmi_amount()),"EMI Payment Processed Successfully");//Communication Service API EndPoint
             caller.postAPICallComm("http://3.110.107.24:8080/sendEmail","MEMIS",emiDetails.getUser_id(),emiDetails.getLoan_id(),"",Integer.toString(emiDetails.getEmi_amount()),"EMI Payment Processed Successfully");
         }catch(Exception e){
-            System.out.println("Communication service API call failed");
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            System.out.println("Communication service API call for EMI Payment failed");
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         //LOS API call to close loan application if 12th months emi paid
@@ -139,6 +141,7 @@ public class Controller implements ControllerService {
 //            caller.postAPICall("",emiDetails.getLoan_id(),"CloseApplication");
 //        }
 //
+        System.out.println("EMI Payment Successful");
         return new ResponseEntity<String>("EMI Payment Successfully Completed",HttpStatus.OK);
  }
 
