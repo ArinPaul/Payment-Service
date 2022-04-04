@@ -17,9 +17,8 @@ public class APICaller implements APICallerService{
 
 
   private ComRequestBody comRequestBody;
-  public APICaller(){
+  private APICaller(){}
 
-  }
     public static APICaller getInstance(){
       if (call == null) return new APICaller();
       return call;
@@ -30,16 +29,16 @@ public class APICaller implements APICallerService{
       var response = client.send(request, HttpResponse.BodyHandlers.ofString());
       return response.body();
   }
-  public String postAPICallLos(String url,String id, String message) throws IOException,InterruptedException{
+    public HashMap postAPICallLos(String url, String id, String message) throws IOException,InterruptedException{
 
-      RestTemplate restTemplate = new RestTemplate();
-      var values = new HashMap<String,String>(){{
-          put(id,message);
-      }};
+        RestTemplate restTemplate = new RestTemplate();
+        var values = new HashMap<String,Long>(){{
+            put("loanId",Long.parseLong(id));
+        }};
 
-      return restTemplate.postForObject(url,values,String.class);
+        return restTemplate.postForObject(url,values,HashMap.class);
 
-  }
+    }
     public String postAPICallComm(String url,String req_type,String user_id, String loan_id,String bank_acc,String amount ,String body) throws IOException,InterruptedException{
 
       HashMap<String,String> details = new HashMap<String,String>(){{
