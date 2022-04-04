@@ -50,6 +50,7 @@ public class Controller implements ControllerService {
             System.out.println("Loan Disbursal Failed");
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        System.out.println("Loan Disbursed");
 
 
 
@@ -62,7 +63,8 @@ public class Controller implements ControllerService {
 //            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>("Process Completed Successfully",HttpStatus.OK);
+
+        return new ResponseEntity<String>("Loan Disbursal Process Completed Successfully",HttpStatus.OK);
     }
 
 
